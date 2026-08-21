@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHFORCE Assessment Portal - Security Foundations</title>
+    <title>TECHFORCE Assessment Portal - CISSP Post-Assessment</title>
     <style>
         :root {
             --primary-color: #004b87;
@@ -12,8 +12,6 @@
             --card-bg: #ffffff;
             --text-color: #2c3e50;
             --border-color: #dcdfe6;
-            --answer-bg: #eef9f5;
-            --answer-border: #27ae60;
         }
 
         body {
@@ -138,35 +136,6 @@
             margin-right: 10px;
         }
 
-        .toggle-ans-btn {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 12px;
-        }
-
-        .toggle-ans-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .answer-box {
-            display: none;
-            margin-top: 12px;
-            padding: 12px;
-            background-color: var(--answer-bg);
-            border-left: 4px solid var(--answer-border);
-            border-radius: 0 4px 4px 0;
-            font-size: 14px;
-        }
-
-        .answer-box strong {
-            color: var(--answer-border);
-        }
-
         .submit-btn {
             display: block;
             width: 100%;
@@ -185,16 +154,6 @@
             background: #006666;
         }
 
-        #result-modal {
-            display: none;
-            background: #e8f4f8;
-            border: 2px solid var(--primary-color);
-            border-radius: 6px;
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
         @media (max-width: 600px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -207,15 +166,23 @@
 <div class="container">
     <header>
         <h1>TECHFORCE Assessment Portal</h1>
-        <p>Interactive Knowledge Verification & Practice</p>
+        <p>CISSP 5-Day Training Post-Assessment Test</p>
     </header>
 
     <form id="assessment-form" action="https://formsubmit.co/mactusinit@gmail.com" method="POST">
-        <!-- Hidden Inputs for FormSubmit -->
+        <!-- Primary recipient is specified in the action attribute (mactusinit@gmail.com) -->
+        
+        <!-- Hidden Inputs for FormSubmit Configurations -->
         <input type="hidden" name="Final Score" id="final-score-input">
-        <input type="hidden" name="_subject" value="New Assessment Submission - TECHFORCE">
+        <input type="hidden" name="_subject" value="New Assessment Submission - TECHFORCE CISSP">
         <input type="hidden" name="_captcha" value="false">
-        <!-- ADD THIS LINE BELOW (Replace username and repository-name with yours) -->
+        
+        <!-- Formats the email into a clean, structured table -->
+        <input type="hidden" name="_template" value="table">
+        
+        <!-- Additional Email Recipient (Replace with your secondary email address) -->
+        <input type="hidden" name="_cc" value="atundaoba@gmail.com.com">
+        
         <input type="hidden" name="_next" value="https://samolutusin.github.io/MacTuinIT-Tests/thanks.html">
         
         <div class="student-info-card">
@@ -235,807 +202,132 @@
 
         <button type="submit" class="submit-btn">Submit Answers</button>
     </form>
-
-    <div id="result-modal">
-        <h2 id="result-title"></h2>
-        <p id="result-text"></p>
-    </div>
 </div>
 
 <script>
 const quizData = [
     {
-        sectionTitle: "CISSP Foundational Security Concepts: Challenging Scenario-Based MCQs",
+        sectionTitle: "CISSP 5-Day Training Post-Assessment Test",
         questions: [
             {
-                id: "lec12_q1",
+                id: "q1",
                 num: 1,
-                text: "An organization has recently experienced a data breach due to a phishing attack, where an employee unknowingly provided their credentials to an attacker. As a CISSP, what type of vulnerability was most likely exploited in this scenario?",
-                options: [
-                    "A. Technical vulnerability due to outdated software",
-                    "B. Human vulnerability due to lack of security awareness",
-                    "C. Physical vulnerability due to weak door locks",
-                    "D. Supply chain vulnerability due to third-party compromise"
-                ],
-                answer: "B",
-                explanation: "The attacker succeeded by leveraging human vulnerability—specifically, the employee's lack of security awareness, which is a classic social engineering scenario."
-            },
-            {
-                id: "lec12_q2",
-                num: 2,
-                text: "A security manager is reviewing the latest CVE entries and notices a new vulnerability affecting their organization's primary operating system. Which of the following is TRUE regarding the CVE system?",
-                options: [
-                    "A. It ranks vulnerabilities based on the likelihood of exploitation",
-                    "B. It assigns a unique identifier but does not indicate severity",
-                    "C. It automatically patches vulnerabilities upon identification",
-                    "D. It provides mandatory compliance guidelines for vendors"
-                ],
-                answer: "B",
-                explanation: "The CVE system assigns unique identifiers to vulnerabilities but does not score or rank their severity."
-            },
-            {
-                id: "lec12_q3",
-                num: 3,
-                text: "Which of the following best describes a zero-day vulnerability?",
-                options: [
-                    "A. A vulnerability that has been publicly disclosed and patched",
-                    "B. A vulnerability with a severity score of 10 on the CVSS",
-                    "C. A vulnerability exploited before a patch is available",
-                    "D. A vulnerability affecting only physical security controls"
-                ],
-                answer: "C",
-                explanation: "A zero-day vulnerability is exploited before the vendor is able to provide a patch."
-            },
-            {
-                id: "lec12_q4",
-                num: 4,
-                text: "A global company is conducting a risk assessment of its intangible assets. Which of the following should be considered an intangible asset?",
-                options: [
-                    "A. The company's proprietary manufacturing equipment",
-                    "B. The company's brand reputation",
-                    "C. The company's on-premise data center",
-                    "D. The company's inventory management system hardware"
-                ],
-                answer: "B",
-                explanation: "Intangible assets include non-physical resources like brand reputation."
-            },
-            {
-                id: "lec12_q5",
-                num: 5,
-                text: "An attacker successfully exfiltrates confidential data from a compromised server. Which principle of the CIA triad has been violated by this attack?",
+                text: "A company discovers that an employee has accidentally exposed confidential customer information. Which security principle has primarily been violated?",
                 options: [
                     "A. Availability",
-                    "B. Redundancy",
-                    "C. Integrity",
-                    "D. Confidentiality"
+                    "B. Integrity",
+                    "C. Confidentiality",
+                    "D. Non-repudiation"
                 ],
-                answer: "D",
-                explanation: "Unauthorized disclosure of data violates confidentiality, the 'C' in the CIA triad."
+                answer: "C"
             },
             {
-                id: "lec12_q6",
-                num: 6,
-                text: "After a security incident, a CISSP is leading an investigation and discovers that the exploited vulnerability had a CVSS score of 9.8. What does this score indicate?",
-                options: [
-                    "A. The vulnerability is low risk and unlikely to be exploited",
-                    "B. The vulnerability is not catalogued by a CVE",
-                    "C. The vulnerability is critical and poses a high risk",
-                    "D. The vulnerability only affects physical assets"
-                ],
-                answer: "C",
-                explanation: "A CVSS score of 9.8 indicates a critical, high-risk vulnerability that requires urgent attention."
-            },
-            {
-                id: "lec12_q7",
-                num: 7,
-                text: "Which of the following scenarios best illustrates exploitation in the context of cybersecurity?",
-                options: [
-                    "A. Running regular vulnerability scans on all endpoints",
-                    "B. An attacker using a malicious script to take advantage of an unpatched software flaw",
-                    "C. Patching systems after identifying a new CVE entry",
-                    "D. Conducting employee security awareness training"
-                ],
-                answer: "B",
-                explanation: "Exploitation involves actively using a vulnerability, such as with a malicious script on an unpatched flaw."
-            },
-            {
-                id: "lec12_q8",
-                num: 8,
-                text: "The ultimate goal of many cyber attacks is data exfiltration. Which of the following is the most effective first-line defense against this threat?",
-                options: [
-                    "A. Disabling all external network connections",
-                    "B. Implementing a layered approach with user awareness training and continuous monitoring",
-                    "C. Relying solely on perimeter firewalls",
-                    "D. Outsourcing all IT functions to a third-party provider"
-                ],
-                answer: "B",
-                explanation: "A layered defense combining user awareness and monitoring is the most effective first-line defense."
-            },
-            {
-                id: "lec12_q9",
-                num: 9,
-                text: "During a review, a security analyst finds several systems with outdated software that have not been patched against known vulnerabilities. What type of vulnerability do these systems present?",
-                options: [
-                    "A. Social engineering vulnerability",
-                    "B. Physical security vulnerability",
-                    "C. Technical vulnerability",
-                    "D. Supply chain vulnerability"
-                ],
-                answer: "C",
-                explanation: "Outdated software is a technical vulnerability, making systems susceptible to technical exploits."
-            },
-            {
-                id: "lec12_q10",
-                num: 10,
-                text: "Which of the following best describes the relationship between threats, vulnerabilities, and assets in the context of a successful cyber attack?",
-                options: [
-                    "A. An asset, a vendor patch, and human error must all be present",
-                    "B. A threat, a motivated attacker, and an exploitable vulnerability must align",
-                    "C. Only technical vulnerabilities need to be present for an attack to occur",
-                    "D. A vulnerability and an incident response plan must align"
-                ],
-                answer: "B",
-                explanation: "Successful attacks require the alignment of a threat, motivated attacker, and exploitable vulnerability."
-            },
-            {
-                id: "lec12_q11",
-                num: 11,
-                text: "A new exploit for a critical infrastructure system surfaces on the dark web, but no vendor patch exists yet. As a CISSP, what is the most appropriate immediate action?",
-                options: [
-                    "A. Ignore the vulnerability until a patch is released",
-                    "B. Disable the affected feature or implement workarounds while monitoring for threats",
-                    "C. Wait for the CVSS score to be published before acting",
-                    "D. Notify law enforcement but make no internal changes"
-                ],
-                answer: "B",
-                explanation: "Disabling affected features or applying workarounds is best practice until a patch is available, with ongoing monitoring for exploitation."
-            },
-            {
-                id: "lec12_q12",
-                num: 12,
-                text: "An organization wants to prioritize its patch management process. Which vulnerability should be addressed first?",
-                options: [
-                    "A. A recently disclosed vulnerability with a CVSS score of 9.9 and active exploitation reported",
-                    "B. A low-severity vulnerability with no known exploits",
-                    "C. An old vulnerability that was patched last year",
-                    "D. One affecting only obsolete hardware already decommissioned"
-                ],
-                answer: "A",
-                explanation: "High-severity, actively exploited vulnerabilities should be prioritized for patching."
-            },
-            {
-                id: "lec12_q13",
-                num: 13,
-                text: "Which of the following best exemplifies a proactive security measure?",
-                options: [
-                    "A. Waiting for regulatory mandates before implementing security controls",
-                    "B. Continuously monitoring systems and updating defenses based on threat intelligence",
-                    "C. Only responding to incidents after they occur",
-                    "D. Disabling unused user accounts on an annual basis"
-                ],
-                answer: "B",
-                explanation: "Proactive security includes continuous monitoring and updating defenses, not waiting for mandates or incidents."
-            },
-            {
-                id: "lec12_q14",
-                num: 14,
-                text: "A company's incident response team detects unauthorized file access and unusual command activity on a critical server. What should be their immediate focus?",
-                options: [
-                    "A. Publicly disclosing the breach",
-                    "B. Containing and mitigating the impact of the attack",
-                    "C. Waiting for the next patch cycle",
-                    "D. Shutting down the entire network"
-                ],
-                answer: "B",
-                explanation: "The immediate focus should be containment and mitigation to limit damage and restore normal operations."
-            },
-            {
-                id: "lec12_q15",
-                num: 15,
-                text: "In the context of CISSP principles, what is the primary objective of information security management?",
-                options: [
-                    "A. Eliminating all risks from the organization's environment",
-                    "B. Managing risks to reduce exposure and ensure resilience",
-                    "C. Outsourcing security responsibilities to specialized vendors",
-                    "D. Relying solely on security technology for protection"
-                ],
-                answer: "B",
-                explanation: "The primary objective is effective risk management—reducing exposure and increasing resilience, not elimination."
-            },
-            {
-                id: "lec12_q16",
-                num: 16,
-                text: "Which scenario most clearly demonstrates a non-technical vulnerability?",
-                options: [
-                    "A. A database with an unpatched SQL injection flaw",
-                    "B. Employees falling for a spear-phishing campaign",
-                    "C. A firewall missing a critical update",
-                    "D. A router with default administrative credentials"
-                ],
-                answer: "B",
-                explanation: "Employees deceived by spear-phishing is a non-technical (human) vulnerability."
-            },
-            {
-                id: "lec12_q17",
-                num: 17,
-                text: "After a major attack leveraging an unknown vulnerability, what is the best long-term strategy to strengthen organizational security?",
-                options: [
-                    "A. Rely exclusively on signature-based antivirus solutions",
-                    "B. Implement continuous monitoring and regular risk assessments",
-                    "C. Focus only on technical defenses such as firewalls",
-                    "D. Discontinue all external internet connections"
-                ],
-                answer: "B",
-                explanation: "Continuous monitoring and regular risk assessments address evolving threats and unknown vulnerabilities."
-            },
-            {
-                id: "lec12_q18",
-                num: 18,
-                text: "Which of the following best represents the concept of an \"asset\" in information security?",
-                options: [
-                    "A. A list of known vulnerabilities catalogued by CVE",
-                    "B. Any resource with value to the organization, tangible or intangible",
-                    "C. Only physical infrastructure such as servers and routers",
-                    "D. Only sensitive data stored in the cloud"
-                ],
-                answer: "B",
-                explanation: "Assets are any resources with value, including both tangible and intangible."
-            },
-            {
-                id: "lec12_q19",
-                num: 19,
-                text: "Which of the following most accurately characterizes the CVSS (Common Vulnerability Scoring System)?",
-                options: [
-                    "A. It provides a list of vendors affected by the vulnerability",
-                    "B. It scores the severity of vulnerabilities from 0 to 10",
-                    "C. It catalogs vulnerabilities and assigns unique IDs",
-                    "D. It is used only for physical security flaws"
-                ],
-                answer: "B",
-                explanation: "CVSS scores the severity of vulnerabilities from 0 (lowest) to 10 (highest)."
-            },
-            {
-                id: "lec12_q20",
-                num: 20,
-                text: "In the aftermath of a significant breach, which approach best supports a mature security posture?",
-                options: [
-                    "A. Exclusive focus on patch management",
-                    "B. Integrating technical defenses, user training, and proactive risk assessments",
-                    "C. Implementing a single, organization-wide firewall",
-                    "D. Taking a reactive approach to incident management"
-                ],
-                answer: "B",
-                explanation: "A mature security posture integrates technical controls, user training, and proactive risk management."
-            }
-        ]
-    },
-    {
-        sectionTitle: "CISSP Exam Practice: The Attack Cycle, Frameworks, and Defense Strategies",
-        questions: [
-            {
-                id: "lec13_q1",
-                num: 1,
-                text: "During a routine vulnerability assessment, your organization discovers several outdated Windows XP machines running in its industrial control systems environment. Which of the following best explains why these systems remain high-priority targets for threat actors?",
-                options: [
-                    "A) They are not connected to the internet and are thus overlooked by attackers.",
-                    "B) They lack modern security controls and are often unpatched, making them easy to exploit.",
-                    "C) They are protected by proprietary protocols unique to industrial systems.",
-                    "D) They automatically receive all vendor security patches due to legacy support."
-                ],
-                answer: "B",
-                explanation: "Outdated systems like Windows XP often lack modern security controls and are unpatched, making them easy targets for attackers who exploit known vulnerabilities."
-            },
-            {
-                id: "lec13_q2",
+                id: "q2",
                 num: 2,
-                text: "An attacker uses Shodan IO to search for exposed Oracle ERP systems with known vulnerabilities. Which phase of the cyber kill chain does this activity primarily represent?",
+                text: "A security manager is conducting a risk assessment. A server has an estimated value of $100,000, an exposure factor of 40%, and an annualized rate of occurrence of 0.2. What is the Annualized Loss Expectancy (ALE)?",
                 options: [
-                    "A) Weaponization",
-                    "B) Delivery",
-                    "C) Reconnaissance",
-                    "D) Exploitation"
+                    "A. $8,000",
+                    "B. $20,000",
+                    "C. $40,000",
+                    "D. $80,000"
                 ],
-                answer: "C",
-                explanation: "Using Shodan to discover vulnerable systems is a form of reconnaissance, where attackers gather information about potential targets before launching attacks."
+                answer: "A"
             },
             {
-                id: "lec13_q3",
+                id: "q3",
                 num: 3,
-                text: "A security analyst notices that a recent Microsoft security update has been reverse-engineered and the resulting exploit has been posted on a public repository. Which of the following best describes the risk to organizations that have not yet applied the patch?",
+                text: "Which of the following BEST represents the principle of least privilege?",
                 options: [
-                    "A) No risk until the exploit is weaponized by attackers.",
-                    "B) Low risk because public exploits are typically harmless.",
-                    "C) High risk, as attackers can quickly use the exploit against unpatched systems.",
-                    "D) No risk since Microsoft actively blocks these exploits automatically."
+                    "A. Giving users administrator access so they can perform their jobs efficiently",
+                    "B. Giving users only the minimum access necessary to perform their assigned responsibilities",
+                    "C. Giving all employees the same level of access",
+                    "D. Removing all access from users after authentication"
                 ],
-                answer: "C",
-                explanation: "When an exploit is made public and organizations have not patched, they are at high risk because attackers can use the exploit immediately."
+                answer: "B"
             },
             {
-                id: "lec13_q4",
+                id: "q4",
                 num: 4,
-                text: "Which of the following actions would most effectively reduce the window of exposure to newly discovered vulnerabilities in your organization's systems?",
+                text: "An organization wants to ensure that employees can access critical business applications even if the primary data center becomes unavailable. Which security concept is MOST relevant?",
                 options: [
-                    "A) Relying on annual penetration tests.",
-                    "B) Applying security patches promptly upon release.",
-                    "C) Waiting for confirmation of exploitation in the wild before patching.",
-                    "D) Disabling user accounts after a breach occurs."
+                    "A. Data classification",
+                    "B. Business continuity",
+                    "C. Separation of duties",
+                    "D. Security awareness"
                 ],
-                answer: "B",
-                explanation: "Promptly applying security patches upon release is the most effective way to minimize exposure to new vulnerabilities."
+                answer: "B"
             },
             {
-                id: "lec13_q5",
+                id: "q5",
                 num: 5,
-                text: "An attacker sends an email containing a malicious image that, when clicked, secretly installs ransomware. Which two cyber kill chain phases does this represent?",
+                text: "Which of the following is the BEST example of multi-factor authentication (MFA)?",
                 options: [
-                    "A) Reconnaissance and Exploitation",
-                    "B) Delivery and Exploitation",
-                    "C) Weaponization and Reconnaissance",
-                    "D) Installation and Delivery"
+                    "A. Username and password",
+                    "B. Password and security question",
+                    "C. Fingerprint and password",
+                    "D. Two different passwords"
                 ],
-                answer: "B",
-                explanation: "Sending a malicious image is delivery; user interaction leading to ransomware installation is exploitation."
+                answer: "C"
             },
             {
-                id: "lec13_q6",
+                id: "q6",
                 num: 6,
-                text: "Which of the following best distinguishes the Mitre ATT&CK Framework from the cyber kill chain model?",
+                text: "During a security assessment, a penetration tester discovers a vulnerability in a web application. What should the tester do FIRST after confirming the vulnerability?",
                 options: [
-                    "A) The kill chain focuses on defense, while Mitre only addresses compliance.",
-                    "B) Mitre provides detailed tactics, techniques, and procedures for each stage, while the kill chain gives a high-level attack overview.",
-                    "C) Both frameworks are identical in their structure and use.",
-                    "D) The kill chain is used for vulnerability management, and Mitre is for incident response only."
+                    "A. Exploit the vulnerability as extensively as possible",
+                    "B. Delete the vulnerable application",
+                    "C. Document the finding according to the rules of engagement and report it appropriately",
+                    "D. Publish the vulnerability online"
                 ],
-                answer: "B",
-                explanation: "The Mitre ATT&CK Framework details tactics, techniques, and procedures at each stage, while the kill chain offers a higher-level sequence."
+                answer: "C"
             },
             {
-                id: "lec13_q7",
+                id: "q7",
                 num: 7,
-                text: "An attacker gains a foothold in your network and uses \"pass the hash\" techniques to access other systems. According to the Mitre ATT&CK Framework, this activity falls under which phase?",
+                text: "Which security control is primarily designed to detect and alert administrators about potentially malicious network activity?",
                 options: [
-                    "A) Reconnaissance",
-                    "B) Privilege Escalation",
-                    "C) Lateral Movement",
-                    "D) Persistence"
+                    "A. IDS",
+                    "B. Firewall",
+                    "C. Encryption",
+                    "D. Backup"
                 ],
-                answer: "C",
-                explanation: "\"Pass the hash\" is a lateral movement technique, allowing attackers to move across systems without credentials."
+                answer: "A"
             },
             {
-                id: "lec13_q8",
+                id: "q8",
                 num: 8,
-                text: "To proactively identify misconfigured assets before attackers do, a security team leverages Shodan to monitor the organization's online exposure. This approach is best described as:",
+                text: "A company separates the responsibilities for requesting, approving, and implementing financial transactions among different employees. Which security principle does this BEST demonstrate?",
                 options: [
-                    "A) Penetration testing",
-                    "B) Passive reconnaissance",
-                    "C) Continuous attack surface monitoring",
-                    "D) Social engineering"
+                    "A. Defense in depth",
+                    "B. Separation of duties",
+                    "C. Fail-safe defaults",
+                    "D. Need to know"
                 ],
-                answer: "C",
-                explanation: "Using Shodan to monitor online exposure for misconfigurations is continuous attack surface monitoring."
+                answer: "B"
             },
             {
-                id: "lec13_q9",
+                id: "q9",
                 num: 9,
-                text: "A penetration tester reports a new vulnerability to a software vendor, providing technical exploitation details. What is the most likely next step for the vendor?",
+                text: "During incident response, the security team has identified a compromised workstation and is preventing it from communicating with other systems. Which incident-response activity is being performed?",
                 options: [
-                    "A) Publicly announce the vulnerability without a fix.",
-                    "B) Release a security patch to remediate the vulnerability.",
-                    "C) Upload the exploit code to a public repository.",
-                    "D) Ignore the report until customer complaints arise."
+                    "A. Preparation",
+                    "B. Detection",
+                    "C. Containment",
+                    "D. Recovery"
                 ],
-                answer: "B",
-                explanation: "Vendors typically respond by developing and releasing a patch to remediate the reported vulnerability."
+                answer: "C"
             },
             {
-                id: "lec13_q10",
+                id: "q10",
                 num: 10,
-                text: "Which of the following defensive measures is most effective against credential dumping attacks?",
+                text: "A CISSP is asked to implement a security solution that conflicts with applicable privacy legislation. What should the CISSP do?",
                 options: [
-                    "A) Implementing strong authentication policies and endpoint detection solutions.",
-                    "B) Scheduling regular system reboots.",
-                    "C) Disabling all user accounts with administrative privileges.",
-                    "D) Using proprietary network protocols only."
+                    "A. Implement the solution because security is more important than privacy",
+                    "B. Ignore the legislation if management approves the solution",
+                    "C. Ensure the solution complies with applicable laws and regulations",
+                    "D. Allow employees to decide whether the solution should be implemented"
                 ],
-                answer: "A",
-                explanation: "Strong authentication and endpoint detection make credential dumping difficult and help detect attempts."
-            },
-            {
-                id: "lec13_q11",
-                num: 11,
-                text: "In the context of the attack cycle, what is typically the final phase where attackers achieve their ultimate objective, such as data theft?",
-                options: [
-                    "A) Installation",
-                    "B) Weaponization",
-                    "C) Actions on Objectives",
-                    "D) Persistence"
-                ],
-                answer: "C",
-                explanation: "\"Actions on Objectives\" is the final phase where attackers achieve their ultimate goals, such as data theft or disruption."
-            },
-            {
-                id: "lec13_q12",
-                num: 12,
-                text: "What is the primary motivation for companies like Microsoft to offer bug bounty programs to researchers?",
-                options: [
-                    "A) To discourage researchers from publishing vulnerabilities on the dark web.",
-                    "B) To reward researchers for responsibly disclosing vulnerabilities, thus improving product security.",
-                    "C) To replace their existing security teams.",
-                    "D) To delay the patching process for vulnerabilities."
-                ],
-                answer: "B",
-                explanation: "Bug bounty programs incentivize responsible disclosure and enhance product security by rewarding researchers."
-            },
-            {
-                id: "lec13_q13",
-                num: 13,
-                text: "Which of the following scenarios best exemplifies active reconnaissance?",
-                options: [
-                    "A) Reviewing employee profiles on LinkedIn for technology clues.",
-                    "B) Scanning the organization's network for open ports and services.",
-                    "C) Searching public records for domain registration details.",
-                    "D) Reading news articles about the target organization."
-                ],
-                answer: "B",
-                explanation: "Scanning for open ports and services directly interacts with the target, making it active reconnaissance."
-            },
-            {
-                id: "lec13_q14",
-                num: 14,
-                text: "A dropper is used in which phase of the cyber kill chain?",
-                options: [
-                    "A) Delivery",
-                    "B) Exploitation",
-                    "C) Installation",
-                    "D) Actions on Objectives"
-                ],
-                answer: "C",
-                explanation: "Droppers are used in the installation phase to establish malware on the victim system."
-            },
-            {
-                id: "lec13_q15",
-                num: 15,
-                text: "After a successful exploitation, an attacker installs malware that enables ongoing access and remote command execution. What is the primary purpose of this phase?",
-                options: [
-                    "A) To identify new targets within the network.",
-                    "B) To maintain persistence and allow further actions.",
-                    "C) To deliver phishing emails to more users.",
-                    "D) To notify the vendor about the breach."
-                ],
-                answer: "B",
-                explanation: "The primary purpose of installing malware post-exploitation is to maintain persistence and facilitate further actions."
-            },
-            {
-                id: "lec13_q16",
-                num: 16,
-                text: "Which of the following best describes a zero trust architecture in the context of defending against evolving cyber threats?",
-                options: [
-                    "A) Trusting users inside the network perimeter by default.",
-                    "B) Granting access only after continuous verification, regardless of network location.",
-                    "C) Disabling all remote access to the organization's resources.",
-                    "D) Relying solely on perimeter firewalls for defense."
-                ],
-                answer: "B",
-                explanation: "Zero trust architectures require continuous verification, regardless of a user's location, never trusting by default."
-            },
-            {
-                id: "lec13_q17",
-                num: 17,
-                text: "An organization wishes to anticipate cyber attacks and reduce breach impact. Which combination of actions aligns best with proactive defense strategies described in the content?",
-                options: [
-                    "A) Waiting for threat intelligence before taking action.",
-                    "B) Implementing layered defenses, timely patching, and continuous monitoring.",
-                    "C) Conducting annual reviews of user permissions only.",
-                    "D) Outsourcing all IT operations to a third-party vendor."
-                ],
-                answer: "B",
-                explanation: "Layered defenses, timely patching, and continuous monitoring are all proactive strategies to reduce breach impact."
-            },
-            {
-                id: "lec13_q18",
-                num: 18,
-                text: "Which of the following is a primary benefit of leveraging security analytics within an organization's defense program?",
-                options: [
-                    "A) Automatically preventing all cyber attacks.",
-                    "B) Detecting unusual behavior that may indicate an ongoing attack.",
-                    "C) Reducing the need for endpoint security controls.",
-                    "D) Eliminating the need for regular vulnerability assessments."
-                ],
-                answer: "B",
-                explanation: "Security analytics helps detect unusual activities, providing early warning of attacks."
-            },
-            {
-                id: "lec13_q19",
-                num: 19,
-                text: "What is the primary function of platforms like Exploit DB for threat actors?",
-                options: [
-                    "A) To share best practices for system hardening.",
-                    "B) To host a repository of publicly available exploits targeting known vulnerabilities.",
-                    "C) To provide official vendor patches.",
-                    "D) To exclusively track insider threats."
-                ],
-                answer: "B",
-                explanation: "Exploit DB is a repository of public exploits for known vulnerabilities, used by both attackers and defenders."
-            },
-            {
-                id: "lec13_q20",
-                num: 20,
-                text: "Why do outdated systems running unsupported operating systems present a significant risk even when protected by traditional firewalls?",
-                options: [
-                    "A) Firewalls can block all malware regardless of system vulnerabilities.",
-                    "B) Legacy systems often lack the ability to implement modern security controls and patches, making them susceptible to known exploits.",
-                    "C) Outdated systems are invisible to external scanners.",
-                    "D) Firewalls negate the need for endpoint security on legacy devices."
-                ],
-                answer: "B",
-                explanation: "Legacy systems often cannot implement modern security controls or receive patches, so they remain vulnerable even with firewalls in place."
-            }
-        ]
-    },
-    {
-        sectionTitle: "CISSP Vulnerability Management and Mitigation Assessment",
-        questions: [
-            {
-                id: "lec14_q1",
-                num: 1,
-                text: "An organization discovers a critical vulnerability in one of its core business applications. According to best practices, what should the security manager's FIRST step be?",
-                options: [
-                    "A) Immediately deploy the vendor's patch to all production systems.",
-                    "B) Assess the risk and test the patch in a non-production environment before deployment.",
-                    "C) Wait for confirmation from other organizations that the patch is safe.",
-                    "D) Disable the affected application until the vulnerability is resolved."
-                ],
-                answer: "B",
-                explanation: "Risk assessment and patch testing in a non-production environment ensures that the patch does not disrupt business operations before deployment to production, aligning with best practices in vulnerability management."
-            },
-            {
-                id: "lec14_q2",
-                num: 2,
-                text: "Which scenario best exemplifies a non-technical vulnerability?",
-                options: [
-                    "A) An unpatched operating system allows remote code execution.",
-                    "B) Employees regularly fall for phishing emails due to lack of cybersecurity training.",
-                    "C) Weak encryption algorithms are used for data in transit.",
-                    "D) A firewall is misconfigured, allowing unauthorized inbound traffic."
-                ],
-                answer: "B",
-                explanation: "Human behavior, such as falling for phishing due to lack of training, is a non-technical vulnerability."
-            },
-            {
-                id: "lec14_q3",
-                num: 3,
-                text: "What is the PRIMARY purpose of assigning a Common Vulnerabilities and Exposures (CVE) number to a vulnerability?",
-                options: [
-                    "A) To indicate the vendor responsible for the vulnerability.",
-                    "B) To uniquely identify and track specific vulnerabilities across systems and organizations.",
-                    "C) To rank vulnerabilities according to their severity.",
-                    "D) To provide step-by-step remediation instructions."
-                ],
-                answer: "B",
-                explanation: "The CVE number is a unique identifier for tracking and referencing specific vulnerabilities across the industry."
-            },
-            {
-                id: "lec14_q4",
-                num: 4,
-                text: "What is the greatest risk if an organization delays applying a critical security patch?",
-                options: [
-                    "A) The patch may introduce new features that require additional training.",
-                    "B) The organization may become non-compliant with industry standards.",
-                    "C) The vulnerability may be exploited by attackers, leading to a security breach.",
-                    "D) The patch may not be compatible with legacy systems."
-                ],
-                answer: "C",
-                explanation: "The main risk of delaying a patch is that attackers can exploit the window of vulnerability, potentially leading to a breach."
-            },
-            {
-                id: "lec14_q5",
-                num: 5,
-                text: "Which of the following best describes a zero-day vulnerability?",
-                options: [
-                    "A) A vulnerability for which a patch is available but has not yet been applied.",
-                    "B) A vulnerability that has been publicly disclosed but not yet exploited.",
-                    "C) A vulnerability unknown to the vendor and unpatched, actively exploited by threat actors.",
-                    "D) A vulnerability identified during routine vulnerability scanning."
-                ],
-                answer: "C",
-                explanation: "A zero-day vulnerability is one unknown to the vendor and unpatched, often actively exploited."
-            },
-            {
-                id: "lec14_q6",
-                num: 6,
-                text: "A security team uses the Common Vulnerability Scoring System (CVSS). What is the primary purpose of this system?",
-                options: [
-                    "A) It assigns every vulnerability a CVE number.",
-                    "B) It provides an open framework for scoring the severity of vulnerabilities.",
-                    "C) It automatically applies security updates.",
-                    "D) It generates mandatory compliance certificates."
-                ],
-                answer: "B",
-                explanation: "CVSS provides a standardized, quantitative way to prioritize vulnerabilities based on multiple factors."
-            },
-            {
-                id: "lec14_q7",
-                num: 7,
-                text: "After a major ransomware attack exploiting a known vulnerability, an executive asks why the patch wasn't applied. What is the MOST plausible explanation in large enterprises?",
-                options: [
-                    "A) The security team was unaware of the patch.",
-                    "B) The patch was being tested to prevent operational disruptions.",
-                    "C) The vendor did not release the patch in time.",
-                    "D) The ransomware attack was unavoidable."
-                ],
-                answer: "B",
-                explanation: "In large enterprises, patches are typically tested before deployment to avoid unintentional outages or disruptions."
-            },
-            {
-                id: "lec14_q8",
-                num: 8,
-                text: "Which of the following actions is MOST effective for reducing the attack surface of an organization?",
-                options: [
-                    "A) Increasing the frequency of password changes.",
-                    "B) Regularly conducting vulnerability scans and timely remediation.",
-                    "C) Disabling antivirus software to improve system performance.",
-                    "D) Allowing employees to use personal devices for work."
-                ],
-                answer: "B",
-                explanation: "Regular vulnerability scans and prompt remediation reduce the number of exploitable weaknesses, minimizing the attack surface."
-            },
-            {
-                id: "lec14_q9",
-                num: 9,
-                text: "Why should patches be tested in a non-production environment before deployment?",
-                options: [
-                    "A) To confirm the patch introduces new features.",
-                    "B) To ensure the patch does not disrupt normal business operations.",
-                    "C) To delay remediation as much as possible.",
-                    "D) To satisfy compliance requirements only."
-                ],
-                answer: "B",
-                explanation: "Testing patches in non-production environments prevents unforeseen disruptions to production systems."
-            },
-            {
-                id: "lec14_q10",
-                num: 10,
-                text: "Which process is MOST critical for ensuring ongoing identification and remediation of vulnerabilities in an organization?",
-                options: [
-                    "A) Annual security awareness training.",
-                    "B) Quarterly penetration testing.",
-                    "C) A structured vulnerability management program.",
-                    "D) Implementing a BYOD policy."
-                ],
-                answer: "C",
-                explanation: "A structured vulnerability management program ensures continuous identification, assessment, and remediation of vulnerabilities."
-            },
-            {
-                id: "lec14_q11",
-                num: 11,
-                text: "During a vulnerability assessment, a critical flaw is identified that allows remote, unauthenticated code execution. What should be the IMMEDIATE response?",
-                options: [
-                    "A) Initiate the incident response plan and isolate affected systems if possible.",
-                    "B) Notify all employees to avoid using their computers.",
-                    "C) Wait for the next scheduled maintenance window.",
-                    "D) Ignore it unless there is evidence of active exploitation."
-                ],
-                answer: "A",
-                explanation: "Immediate initiation of incident response and isolation is critical to prevent exploitation of a critical vulnerability."
-            },
-            {
-                id: "lec14_q12",
-                num: 12,
-                text: "What is the PRIMARY role of a security manager in vulnerability management?",
-                options: [
-                    "A) Applying all patches personally.",
-                    "B) Overseeing the process to ensure vulnerabilities are assessed, prioritized, and remediated on schedule.",
-                    "C) Developing software to detect vulnerabilities.",
-                    "D) Blocking all external network traffic."
-                ],
-                answer: "B",
-                explanation: "The security manager ensures the entire vulnerability management lifecycle is followed but does not perform technical patching themselves."
-            },
-            {
-                id: "lec14_q13",
-                num: 13,
-                text: "Which of the following best reflects a proactive approach to vulnerability management?",
-                options: [
-                    "A) Waiting for regulatory audits to identify vulnerabilities.",
-                    "B) Relying solely on vendor notifications for patches.",
-                    "C) Regular vulnerability scanning, risk assessments, and staying informed on new threats.",
-                    "D) Only patching systems after a security incident occurs."
-                ],
-                answer: "C",
-                explanation: "Proactive vulnerability management involves ongoing scanning, risk assessment, and staying current with threats."
-            },
-            {
-                id: "lec14_q14",
-                num: 14,
-                text: "What lesson can be learned from the WannaCry and NotPetya ransomware attacks regarding vulnerability management?",
-                options: [
-                    "A) Ransomware cannot be prevented through patching.",
-                    "B) Timely application of vendor-released patches is critical to prevent widespread damage.",
-                    "C) Antivirus solutions are sufficient to stop all ransomware.",
-                    "D) Only financial institutions are at risk from ransomware."
-                ],
-                answer: "B",
-                explanation: "WannaCry and NotPetya demonstrated the necessity of timely patching to prevent widespread, damaging attacks."
-            },
-            {
-                id: "lec14_q15",
-                num: 15,
-                text: "An organization is compliant with PCI DSS and discovers a high-severity vulnerability with a CVSS score of 9.5. What is the MAXIMUM time allowed to remediate this issue under PCI DSS?",
-                options: [
-                    "A) Within 72 hours.",
-                    "B) Within one week.",
-                    "C) Within one month.",
-                    "D) Within six months."
-                ],
-                answer: "C",
-                explanation: "PCI DSS mandates remediation of high/critical vulnerabilities within one month of vendor notification."
-            },
-            {
-                id: "lec14_q16",
-                num: 16,
-                text: "Which of the following is an example of a technical vulnerability?",
-                options: [
-                    "A) A lack of employee security awareness.",
-                    "B) Unpatched software exposing a system to remote attacks.",
-                    "C) Employees using weak passwords due to poor policy enforcement.",
-                    "D) Falling victim to a social engineering scam."
-                ],
-                answer: "B",
-                explanation: "Unpatched software is a technical vulnerability, as it relates to system weaknesses."
-            },
-            {
-                id: "lec14_q17",
-                num: 17,
-                text: "Why is continuous monitoring an essential component of vulnerability management?",
-                options: [
-                    "A) It ensures all vulnerabilities are immediately remediated.",
-                    "B) It enables detection of new vulnerabilities and threats as they arise.",
-                    "C) It replaces the need for periodic vulnerability scanning.",
-                    "D) It guarantees full compliance with all security standards."
-                ],
-                answer: "B",
-                explanation: "Continuous monitoring helps detect new vulnerabilities and threats as they appear, enabling timely intervention."
-            },
-            {
-                id: "lec14_q18",
-                num: 18,
-                text: "What is the MOST effective way for security professionals to stay up to date with emerging vulnerabilities?",
-                options: [
-                    "A) Waiting for internal IT memos.",
-                    "B) Relying solely on scheduled annual training.",
-                    "C) Subscribing to cybersecurity newsletters, following researchers, and participating in forums.",
-                    "D) Only addressing vulnerabilities after they are exploited."
-                ],
-                answer: "C",
-                explanation: "Staying informed via newsletters, researchers, and forums ensures professionals are aware of the latest vulnerabilities and threats."
-            },
-            {
-                id: "lec14_q19",
-                num: 19,
-                text: "Which action should be AVOIDED when a high-impact patch is released for a critical system?",
-                options: [
-                    "A) Test the patch in a non-production environment.",
-                    "B) Deploy the patch immediately to production without testing.",
-                    "C) Assess potential business impact before deployment.",
-                    "D) Communicate patching schedules to relevant stakeholders."
-                ],
-                answer: "B",
-                explanation: "Skipping testing and deploying a patch directly to production risks operational issues and downtime."
-            },
-            {
-                id: "lec14_q20",
-                num: 20,
-                text: "In the context of vulnerability management, what does the \"attack surface\" refer to?",
-                options: [
-                    "A) The sum of all security tools deployed by an organization.",
-                    "B) The total number of entry points through which an attacker could exploit vulnerabilities.",
-                    "C) The number of employees with administrative rights.",
-                    "D) The physical area of the data center."
-                ],
-                answer: "B",
-                explanation: "The attack surface encompasses all possible points where an attacker could exploit vulnerabilities within an organization's systems."
+                answer: "C"
             }
         ]
     }
@@ -1073,37 +365,16 @@ function renderQuiz() {
                 input.type = 'radio';
                 input.name = q.id;
                 input.value = opt.charAt(0);
+                input.required = true;
 
                 label.appendChild(input);
                 label.appendChild(document.createTextNode(` ${opt}`));
                 optsGroup.appendChild(label);
             });
 
-            const toggleBtn = document.createElement('button');
-            toggleBtn.type = 'button';
-            toggleBtn.className = 'toggle-ans-btn';
-            toggleBtn.innerText = 'Show Answer & Explanation';
-
-            const ansBox = document.createElement('div');
-            ansBox.className = 'answer-box';
-            ansBox.id = `ans_${q.id}`;
-            ansBox.innerHTML = `<strong>Correct Answer: ${q.answer}</strong><br>${q.explanation}`;
-
-            toggleBtn.onclick = () => {
-                if (ansBox.style.display === 'block') {
-                    ansBox.style.display = 'none';
-                    toggleBtn.innerText = 'Show Answer & Explanation';
-                } else {
-                    ansBox.style.display = 'block';
-                    toggleBtn.innerText = 'Hide Answer & Explanation';
-                }
-            };
-
             card.appendChild(num);
             card.appendChild(text);
             card.appendChild(optsGroup);
-            card.appendChild(toggleBtn);
-            card.appendChild(ansBox);
 
             container.appendChild(card);
         });
