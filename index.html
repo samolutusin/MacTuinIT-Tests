@@ -156,16 +156,6 @@
         .score-banner .score-big { font-size: 44px; font-weight: 800; margin: 6px 0 2px 0; }
         .score-banner .score-detail { font-size: 14px; opacity: 0.95; }
 
-        .result-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-        .action-btn {
-            flex: 1; min-width: 220px;
-            padding: 14px; font-size: 15px; font-weight: 700;
-            border-radius: 6px; border: none; cursor: pointer;
-        }
-        .download-btn { background: var(--primary-color); color: #fff; }
-        .download-btn:hover { background: #003a68; }
-        .retake-btn { background: #fff; color: var(--primary-color); border: 2px solid var(--primary-color) !important; }
-
         .email-status {
             padding: 12px 16px; border-radius: 6px; font-size: 14px; font-weight: 600;
             margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
@@ -435,6 +425,10 @@ function renderQuiz() {
         });
     });
 }
+
+/* Render the question cards immediately (right after the function that builds
+   them) so the quiz always appears, even if any later wiring is edited. */
+renderQuiz();
 
 // ==PDF-ENGINE-START==
 /* ============================================================================
@@ -938,7 +932,7 @@ async function ajaxFallbackNotify(payload) {
     fd.append('Result (Pass mark 70%)', payload.passed ? 'PASS' : 'FAIL');
     fd.append('Submission Date', payload.dateStr);
     fd.append('Question Responses', payload.responsesCompact);
-    fd.append('Result PDF', 'Student has the downloaded PDF copy on their device.');
+    fd.append('Result PDF', 'Not attached to this backup notification — student was asked to resubmit from a current browser or contact you with their on-screen score.');
 
     const res = await fetch(`https://formsubmit.co/ajax/${PRIMARY_EMAIL}`, { method: 'POST', body: fd });
     const data = await res.json().catch(() => ({}));
@@ -970,12 +964,11 @@ document.getElementById('assessment-form').addEventListener('submit', async func
             .map(it => `Q${it.num}: ${it.selectedLetter}${it.isCorrect ? ' (Correct)' : ' (Incorrect - key: ' + it.correctLetter + ')'}`).join('  |  ')
     };
 
-    /* ---- build the polished PDF ---- */
+    /* ---- build the polished PDF (in memory, for the email attachment) ---- */
     const pdfBytes = buildResultPdf(payload);
-    lastPdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
     const safeName = (s) => s.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
-    lastPdfName = `CISM-PreAssessment-Result-${safeName(payload.first)}-${safeName(payload.last)}-${new Date().toISOString().slice(0, 10)}.pdf`;
-    const pdfFile = new File([lastPdfBlob], lastPdfName, { type: 'application/pdf' });
+    const pdfName = `CISM-PreAssessment-Result-${safeName(payload.first)}-${safeName(payload.last)}-${new Date().toISOString().slice(0, 10)}.pdf`;
+    const pdfFile = new File([pdfBytes], pdfName, { type: 'application/pdf' });
 
     /* ---- fill structured hidden fields (used by the classic fallback too) ---- */
     document.getElementById('payload-first').value = payload.first;
@@ -997,9 +990,6 @@ document.getElementById('assessment-form').addEventListener('submit', async func
     document.getElementById('score-detail').textContent =
         `${payload.percentage}%  ·  Pass mark: 70% (14/20)  ·  ${payload.first} ${payload.last}  ·  ${payload.dateStr}`;
 
-    /* ---- auto-download the PDF for the student ---- */
-    triggerDownload();
-
     /* ---- show result screen ---- */
     btn.textContent = 'Submitted';
     document.getElementById('result-screen').style.display = 'block';
@@ -1012,23 +1002,21 @@ document.getElementById('assessment-form').addEventListener('submit', async func
         setEmailStatus('sent',
             `Result report sent \u2014 the graded PDF is attached and on its way to ${PRIMARY_EMAIL}` +
             (CC_EMAIL ? ` (copy: ${CC_EMAIL}).` : '.') +
-            ' A copy was also downloaded to your device. If it does not arrive within a few minutes, please check the spam/junk folder.' +
-            (outcome.attachmentStaged ? '' : ' Note: this browser could not attach the file automatically \u2014 please email the downloaded PDF to the instructors.'));
+            ' If it does not arrive within a few minutes, please let your instructor know.' +
+            (outcome.attachmentStaged ? '' : ' Note: this browser could not attach the file automatically \u2014 please resubmit once from a current browser (Chrome, Edge, Firefox or Safari) so your PDF reaches the instructors.'));
     } catch (primaryErr) {
         /* Primary path unconfirmed \u2192 still notify instructors (summary only) */
         try {
             await ajaxFallbackNotify(payload);
             setEmailStatus('sent',
-                'Result notification sent to the assessment team (summary). The automatic attachment could not be confirmed \u2014 your full graded PDF was downloaded to this device; please forward it to ' +
-                PRIMARY_EMAIL + ' if it does not arrive attached to their notification.');
+                'Result summary sent to the assessment team, but the PDF attachment could not be confirmed. Please resubmit once from a current browser, or contact ' +
+                PRIMARY_EMAIL + ' with the score shown above.');
         } catch (backupErr) {
             setEmailStatus('failed',
-                'Automatic sending could not be confirmed (' + backupErr.message + '). Your graded result PDF has been downloaded \u2014 please email it to ' + PRIMARY_EMAIL + '.');
+                'Automatic sending could not be confirmed (' + backupErr.message + '). Please contact ' + PRIMARY_EMAIL + ' and share the score shown on this page.');
         }
     }
 });
-
-document.getElementById('download-btn').addEventListener('click', triggerDownload);
 
 ['student-first', 'student-last', 'student-email'].forEach(id =>
     document.getElementById(id).addEventListener('input', e => {
@@ -1036,8 +1024,6 @@ document.getElementById('download-btn').addEventListener('click', triggerDownloa
         clearFormError();
     })
 );
-
-renderQuiz();
 </script>
 
 </body>
