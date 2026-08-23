@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHFORCE Assessment Portal - CISSP Post-Assessment</title>
+    <title>TECHFORCE Assessment Portal - CISM Pre-Assessment Test</title>
     <style>
         :root {
             --primary-color: #004b87;
@@ -12,6 +12,9 @@
             --card-bg: #ffffff;
             --text-color: #2c3e50;
             --border-color: #dcdfe6;
+            --success-color: #1e8e3e;
+            --danger-color: #c5221f;
+            --warning-bg: #fef7e0;
         }
 
         body {
@@ -23,33 +26,31 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        .container { max-width: 900px; margin: 0 auto; }
 
         header {
             text-align: center;
             background: var(--primary-color);
             color: #fff;
-            padding: 25px;
+            padding: 25px 25px 20px 25px;
             border-radius: 8px 8px 0 0;
             margin-bottom: 20px;
         }
 
-        header h1 {
-            margin: 0 0 5px 0;
-            font-size: 26px;
-            letter-spacing: 1px;
+        header h1 { margin: 0 0 5px 0; font-size: 26px; letter-spacing: 1px; }
+        header p { margin: 0; font-size: 15px; opacity: 0.95; font-weight: 600; }
+        header .subtitle-line { font-size: 13px; opacity: 0.85; font-weight: 400; margin-top: 2px; }
+
+        .meta-chips {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px;
+        }
+        .meta-chip {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.35);
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
         }
 
-        header p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .student-info-card {
+        .student-info-card, .instructions-card {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
@@ -58,29 +59,21 @@
             border-top: 4px solid var(--secondary-color);
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+        .instructions-card h3 { margin: 0 0 8px 0; color: var(--primary-color); font-size: 15px; }
+        .instructions-card ul { margin: 0; padding-left: 20px; font-size: 14px; }
+        .instructions-card li { margin-bottom: 4px; }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
 
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
+        .form-group label { font-weight: 600; margin-bottom: 5px; font-size: 14px; }
         .form-group input {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 10px; border: 1px solid var(--border-color);
+            border-radius: 4px; font-size: 14px;
         }
+        .form-group input:focus { outline: 2px solid rgba(0,75,135,0.25); border-color: var(--primary-color); }
+        .form-group input.input-error { border-color: var(--danger-color); background: #fff5f5; }
 
         .section-title {
             background: var(--primary-color);
@@ -88,9 +81,11 @@
             padding: 12px 20px;
             border-radius: 6px;
             margin: 30px 0 15px 0;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
         }
+        .section-title .weight { font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.18); padding: 3px 10px; border-radius: 14px; }
 
         .question-card {
             background: var(--card-bg);
@@ -100,64 +95,122 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             border: 1px solid var(--border-color);
         }
+        .question-card.unanswered { border: 1px solid var(--danger-color); box-shadow: 0 0 0 2px rgba(197,34,31,0.12); }
 
-        .question-num {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
+        .question-num { font-weight: bold; color: var(--primary-color); margin-bottom: 8px; }
+        .question-text { font-weight: 600; margin-bottom: 12px; }
 
-        .question-text {
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .options-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .options-group { display: flex; flex-direction: column; gap: 8px; }
 
         .option-label {
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center;
             padding: 8px 12px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             cursor: pointer;
             transition: background 0.2s;
         }
+        .option-label:hover { background-color: #f8f9fa; }
+        .option-label input { margin-right: 10px; }
 
-        .option-label:hover {
-            background-color: #f8f9fa;
-        }
+        /* Post-submit review highlighting */
+        .option-label.review-correct { background: #e6f4ea; border-color: var(--success-color); font-weight: 600; }
+        .option-label.review-wrong-choice { background: #fce8e6; border-color: var(--danger-color); }
 
-        .option-label input {
-            margin-right: 10px;
-        }
+        .option-tag { margin-left: auto; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+        .option-tag.correct-tag { background: var(--success-color); color: #fff; }
+        .option-tag.wrong-tag { background: var(--danger-color); color: #fff; }
 
         .submit-btn {
-            display: block;
-            width: 100%;
+            display: block; width: 100%;
             background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 30px;
+            color: white; border: none;
+            padding: 15px; font-size: 18px; font-weight: bold;
+            border-radius: 6px; cursor: pointer; margin-top: 30px;
+        }
+        .submit-btn:hover { background: #006666; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .form-error {
+            display: none;
+            background: var(--warning-bg);
+            border: 1px solid #f2c94c;
+            color: #7b5800;
+            padding: 10px 14px; border-radius: 6px;
+            margin-top: 15px; font-size: 14px; font-weight: 600;
         }
 
-        .submit-btn:hover {
-            background: #006666;
+        /* ---------- Result screen ---------- */
+        #result-screen { display: none; }
+
+        .score-banner {
+            border-radius: 8px;
+            padding: 26px 22px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 22px;
         }
+        .score-banner.pass { background: linear-gradient(135deg, #1e8e3e, #28a745); }
+        .score-banner.fail { background: linear-gradient(135deg, #b3261e, #c5221f); }
+        .score-banner .verdict { font-size: 26px; font-weight: 800; letter-spacing: 1px; }
+        .score-banner .score-big { font-size: 44px; font-weight: 800; margin: 6px 0 2px 0; }
+        .score-banner .score-detail { font-size: 14px; opacity: 0.95; }
+
+        .result-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .action-btn {
+            flex: 1; min-width: 220px;
+            padding: 14px; font-size: 15px; font-weight: 700;
+            border-radius: 6px; border: none; cursor: pointer;
+        }
+        .download-btn { background: var(--primary-color); color: #fff; }
+        .download-btn:hover { background: #003a68; }
+        .retake-btn { background: #fff; color: var(--primary-color); border: 2px solid var(--primary-color) !important; }
+
+        .email-status {
+            padding: 12px 16px; border-radius: 6px; font-size: 14px; font-weight: 600;
+            margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
+        }
+        .email-status.sending { background: #e8f0fe; border: 1px solid #a8c7fa; color: #174ea6; }
+        .email-status.sent { background: #e6f4ea; border: 1px solid #a8dab5; color: #1e7e34; }
+        .email-status.failed { background: #fce8e6; border: 1px solid #f5b0ab; color: #a50e0e; }
+
+        .spinner {
+            width: 18px; height: 18px; flex: 0 0 18px;
+            border: 3px solid rgba(23,78,166,0.25);
+            border-top-color: #174ea6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .review-heading {
+            background: var(--primary-color); color: #fff;
+            padding: 10px 18px; border-radius: 6px;
+            font-size: 15px; font-weight: 600; margin: 26px 0 12px 0;
+            display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;
+        }
+        .review-heading .sec-score { font-size: 12px; background: rgba(255,255,255,0.18); padding: 2px 10px; border-radius: 12px; }
+
+        .review-item {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-left: 5px solid var(--border-color);
+            border-radius: 6px; padding: 14px 16px; margin-bottom: 12px; font-size: 14px;
+        }
+        .review-item.ok { border-left-color: var(--success-color); }
+        .review-item.bad { border-left-color: var(--danger-color); }
+        .review-item .r-q { font-weight: 600; margin-bottom: 6px; }
+        .review-item .r-line { font-size: 13.5px; margin-top: 3px; }
+        .r-badge { font-weight: 800; font-size: 12px; padding: 2px 9px; border-radius: 11px; color: #fff; margin-left: 8px; white-space: nowrap; }
+        .r-badge.ok { background: var(--success-color); }
+        .r-badge.bad { background: var(--danger-color); }
+        .r-line .lbl { font-weight: 700; color: #667; }
+        .r-line.yours-wrong { color: var(--danger-color); }
+        .r-line.key { color: var(--success-color); font-weight: 600; }
+
+        .hidden { display: none !important; }
 
         @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -166,82 +219,197 @@
 <div class="container">
     <header>
         <h1>TECHFORCE Assessment Portal</h1>
-        <p>CISSP 5-Day Training Post-Assessment Test</p>
+        <!-- Title indicated exactly as on the source PDF -->
+        <p>CISM Pre-Assessment Test</p>
+        <div class="subtitle-line">Certified Information Security Manager &mdash; Questions</div>
+        <div class="meta-chips">
+            <span class="meta-chip">Questions: 20 multiple-choice</span>
+            <span class="meta-chip">Time: 35 minutes</span>
+            <span class="meta-chip">Pass mark: 70% (14/20)</span>
+            <span class="meta-chip">Format: Single best answer</span>
+        </div>
     </header>
 
-    <form id="assessment-form" action="https://formsubmit.co/mactusinit@gmail.com" method="POST">
-        <!-- FormSubmit Control Inputs -->
-        <input type="hidden" name="_subject" value="Official Result: TECHFORCE CISSP Assessment">
+    <form id="assessment-form" action="https://formsubmit.co/mactusinit@gmail.com" method="POST" enctype="multipart/form-data" novalidate>
+        <!-- ============================================================
+             EMAIL CONFIGURATION (as indicated in the original template)
+             - Primary recipient: mactusinit@gmail.com  (form action above)
+             - CC recipient:      atundaoba@gmail.com   (_cc field below)
+             ============================================================ -->
+        <input type="hidden" name="_subject" id="cfg-subject" value="Official Result: TECHFORCE CISM Pre-Assessment Test">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_cc" value="atundaoba@gmail.com">
+        <input type="hidden" name="_cc" id="cfg-cc" value="atundaoba@gmail.com">
         <input type="hidden" name="_next" value="https://samolutusin.github.io/MacTuinIT-Tests/thanks.html">
-        
-        <!-- Clean Structured Payload Inputs -->
-        <input type="hidden" name="Student Full Name" id="payload-name">
-        <input type="hidden" name="Student ID / Email" id="payload-id">
-        <input type="hidden" name="Assessment Title" value="CISSP 5-Day Training Post-Assessment">
+
+        <!-- Clean structured payload rows (filled automatically on submit) -->
+        <input type="hidden" name="Student First Name" id="payload-first">
+        <input type="hidden" name="Student Last Name"  id="payload-last">
+        <input type="hidden" name="Student Email"      id="payload-email">
+        <input type="hidden" name="Assessment Title"   value="CISM Pre-Assessment Test (Certified Information Security Manager)">
         <input type="hidden" name="Final Score & Percentage" id="payload-score">
-        <input type="hidden" name="Submission Date" id="payload-date">
+        <input type="hidden" name="Result (Pass mark 70%)"   id="payload-result">
+        <input type="hidden" name="Submission Date"    id="payload-date">
+        <input type="hidden" name="Question Responses" id="payload-responses">
+        <!-- The graded result PDF is attached to this hidden file input only
+             if the automatic submission falls back to a classic form post. -->
+        <input type="file" name="attachment" id="hidden-attachment" style="display:none">
 
         <div class="student-info-card">
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="student-name">Student Full Name *</label>
-                    <input type="text" id="student-name" required placeholder="Enter your full name">
+                    <label for="student-first">Student First Name *</label>
+                    <input type="text" id="student-first" required placeholder="Enter your first name" autocomplete="given-name">
                 </div>
                 <div class="form-group">
-                    <label for="student-id">Student ID / Email *</label>
-                    <input type="text" id="student-id" required placeholder="Enter your ID or email">
+                    <label for="student-last">Student Last Name *</label>
+                    <input type="text" id="student-last" required placeholder="Enter your last name" autocomplete="family-name">
+                </div>
+                <div class="form-group full-width">
+                    <label for="student-email">Student Email *</label>
+                    <input type="email" id="student-email" required placeholder="Enter your email address" autocomplete="email">
                 </div>
             </div>
         </div>
 
+        <div class="instructions-card">
+            <h3>Instructions</h3>
+            <ul>
+                <li>Each question has one best answer. Select the single most appropriate option.</li>
+                <li>The test covers all four CISM job-practice domains.</li>
+                <li>Answer all questions before submitting. Your score, the correct answers and a polished, downloadable result report (PDF) will be provided after submission &mdash; and automatically emailed to your instructors.</li>
+            </ul>
+        </div>
+
         <div id="quiz-container"></div>
 
-        <button type="submit" class="submit-btn">Submit Answers</button>
+        <div id="form-error" class="form-error"></div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Submit Answers</button>
     </form>
+
+    <!-- ===================== RESULT SCREEN ===================== -->
+    <div id="result-screen">
+        <div class="score-banner" id="score-banner">
+            <div class="verdict" id="verdict-text"></div>
+            <div class="score-big" id="score-big"></div>
+            <div class="score-detail" id="score-detail"></div>
+        </div>
+
+        <div class="email-status sending" id="email-status">
+            <div class="spinner"></div>
+            <span id="email-status-text">Sending your result report to the assessment team&hellip;</span>
+        </div>
+
+        <div class="result-actions">
+            <button type="button" class="action-btn download-btn" id="download-btn">&#11015;&nbsp; Download My Result Report (PDF)</button>
+        </div>
+
+        <div id="review-container"></div>
+    </div>
 </div>
 
 <script>
+/* ============================================================================
+   EDITABLE CONFIGURATION
+   ----------------------------------------------------------------------------
+   - PRIMARY_EMAIL .... main inbox that receives every result notification
+   - CC_EMAIL ......... receives a copy (set to "" to disable the copy)
+   - PASS_MARK ........ pass threshold (0.70 = 70%, i.e. 14/20 correct)
+   - ASSESSMENT_TITLE . shown on the page, the PDF report and the email
+   ============================================================================ */
+const PRIMARY_EMAIL    = "mactusinit@gmail.com";
+const CC_EMAIL         = "atundaoba@gmail.com";
+const PASS_MARK        = 0.70;
+const ASSESSMENT_TITLE = "CISM Pre-Assessment Test";
+const PORTAL_NAME      = "TECHFORCE Assessment Portal";
+
+/* ============================================================================
+   EDITABLE QUESTION BANK  (title & domain headings kept as on the source PDF)
+   ----------------------------------------------------------------------------
+   How to edit a question:  change "text" or any option string.
+   How to change the key:   set "answer" to the letter of the correct option.
+   How to add a question:   copy a { ... } block and give it a new unique "id"
+                            and the next "num". Nothing else needs to change.
+   ============================================================================ */
 const quizData = [
     {
-        sectionTitle: "CISSP 5-Day Training Post-Assessment Test",
+        sectionTitle: "DOMAIN 1 · INFORMATION SECURITY GOVERNANCE",
+        sectionWeight: "24% OF EXAM",
         questions: [
-            { id: "q1", num: 1, text: "A company discovers that an employee has accidentally exposed confidential customer information. Which security principle has primarily been violated?", options: ["A. Availability", "B. Integrity", "C. Confidentiality", "D. Non-repudiation"], answer: "C" },
-            { id: "q2", num: 2, text: "A security manager is conducting a risk assessment. A server has an estimated value of $100,000, an exposure factor of 40%, and an annualized rate of occurrence of 0.2. What is the Annualized Loss Expectancy (ALE)?", options: ["A. $8,000", "B. $20,000", "C. $40,000", "D. $80,000"], answer: "A" },
-            { id: "q3", num: 3, text: "Which of the following BEST represents the principle of least privilege?", options: ["A. Giving users administrator access so they can perform their jobs efficiently", "B. Giving users only the minimum access necessary to perform their assigned responsibilities", "C. Giving all employees the same level of access", "D. Removing all access from users after authentication"], answer: "B" },
-            { id: "q4", num: 4, text: "An organization wants to ensure that employees can access critical business applications even if the primary data center becomes unavailable. Which security concept is MOST relevant?", options: ["A. Data classification", "B. Business continuity", "C. Separation of duties", "D. Security awareness"], answer: "B" },
-            { id: "q5", num: 5, text: "Which of the following is the BEST example of multi-factor authentication (MFA)?", options: ["A. Username and password", "B. Password and security question", "C. Fingerprint and password", "D. Two different passwords"], answer: "C" },
-            { id: "q6", num: 6, text: "During a security assessment, a penetration tester discovers a vulnerability in a web application. What should the tester do FIRST after confirming the vulnerability?", options: ["A. Exploit the vulnerability as extensively as possible", "B. Delete the vulnerable application", "C. Document the finding according to the rules of engagement and report it appropriately", "D. Publish the vulnerability online"], answer: "C" },
-            { id: "q7", num: 7, text: "Which security control is primarily designed to detect and alert administrators about potentially malicious network activity?", options: ["A. IDS", "B. Firewall", "C. Encryption", "D. Backup"], answer: "A" },
-            { id: "q8", num: 8, text: "A company separates the responsibilities for requesting, approving, and implementing financial transactions among different employees. Which security principle does this BEST demonstrate?", options: ["A. Defense in depth", "B. Separation of duties", "C. Fail-safe defaults", "D. Need to know"], answer: "B" },
-            { id: "q9", num: 9, text: "During incident response, the security team has identified a compromised workstation and is preventing it from communicating with other systems. Which incident-response activity is being performed?", options: ["A. Preparation", "B. Detection", "C. Containment", "D. Recovery"], answer: "C" },
-            { id: "q10", num: 10, text: "A CISSP is asked to implement a security solution that conflicts with applicable privacy legislation. What should the CISSP do?", options: ["A. Implement the solution because security is more important than privacy", "B. Ignore the legislation if management approves the solution", "C. Ensure the solution complies with applicable laws and regulations", "D. Allow employees to decide whether the solution should be implemented"], answer: "C" }
+            { id: "q1", num: 1, text: "The PRIMARY objective of information security governance is to:", options: ["A. Implement and operate technical security controls on a day-to-day basis", "B. Align information security strategy with business strategy and objectives", "C. Conduct daily vulnerability scans across the enterprise network", "D. Ensure every technical security standard is adopted without exception"], answer: "B" },
+            { id: "q2", num: 2, text: "The PRIMARY purpose of a gap analysis in a security program is to:", options: ["A. Eliminate the need for ongoing risk assessments", "B. Measure the difference between the current state and the desired objectives", "C. Detect malware infections on production servers", "D. Set the salaries of security personnel"], answer: "B" },
+            { id: "q3", num: 3, text: "In a RACI matrix, the person designated as “Accountable” for a security task is BEST described as the one who:", options: ["A. Must be kept informed about task progress", "B. Personally performs the hands-on work", "C. Holds ultimate ownership and answers for the final outcome", "D. Provides expert consultation when asked"], answer: "C" },
+            { id: "q4", num: 4, text: "A balanced scorecard (BSC) is BEST used in information security to:", options: ["A. Encrypt sensitive data at rest and in transit", "B. Translate security strategy into measurable objectives across multiple business perspectives", "C. Replace the need for antivirus and endpoint protection", "D. Negotiate pricing in vendor contracts"], answer: "B" },
+            { id: "q5", num: 5, text: "Ultimate accountability for information security governance in an organization rests with:", options: ["A. The Chief Information Security Officer (CISO)", "B. The security operations analysts", "C. The board of directors and senior management", "D. The IT service desk"], answer: "C" }
+        ]
+    },
+    {
+        sectionTitle: "DOMAIN 2 · INFORMATION RISK MANAGEMENT",
+        sectionWeight: "24% OF EXAM",
+        questions: [
+            { id: "q6", num: 6, text: "Residual risk is BEST defined as the risk that:", options: ["A. Has been completely eliminated by controls", "B. Remains after security controls have been applied", "C. Represents the maximum risk the organization can survive", "D. Has been shifted to an external insurer"], answer: "B" },
+            { id: "q7", num: 7, text: "An organization purchases a cyber-insurance policy to address a significant risk. This is an example of which risk response?", options: ["A. Risk mitigation", "B. Risk avoidance", "C. Risk transfer", "D. Risk acceptance"], answer: "C" },
+            { id: "q8", num: 8, text: "Risk appetite refers to:", options: ["A. The total count of known vulnerabilities in the environment", "B. The level of risk an organization is willing to accept in pursuit of its objectives", "C. The monetary cost of deploying security controls", "D. The statistical probability of an attack occurring"], answer: "B" },
+            { id: "q9", num: 9, text: "A defense-in-depth strategy is BEST described as:", options: ["A. Relying on a single, exceptionally strong control", "B. Layering multiple controls so that if one fails, others continue to protect the asset", "C. Outsourcing all security operations to a single vendor", "D. Encrypting only the most sensitive data sets"], answer: "B" },
+            { id: "q10", num: 10, text: "Which risk response involves discontinuing the activity that introduces an unacceptable level of risk?", options: ["A. Mitigation", "B. Transfer", "C. Acceptance", "D. Avoidance"], answer: "D" }
+        ]
+    },
+    {
+        sectionTitle: "DOMAIN 3 · INFORMATION SECURITY PROGRAM DEVELOPMENT & MANAGEMENT",
+        sectionWeight: "27% OF EXAM",
+        questions: [
+            { id: "q11", num: 11, text: "The “Availability” principle of the CIA Triad ensures that:", options: ["A. Data remains confidential from unauthorized users", "B. Data and systems are accessible to authorized users when needed", "C. Data cannot be altered by unauthorized parties", "D. Data is always stored in encrypted form"], answer: "B" },
+            { id: "q12", num: 12, text: "In Identity and Access Management (IAM), “authorization” BEST refers to:", options: ["A. Proving who a user claims to be", "B. Granting or denying access to resources based on a proven identity", "C. Recording user activity for later review and accounting", "D. Resetting a user’s forgotten password"], answer: "B" },
+            { id: "q13", num: 13, text: "Under the cloud shared responsibility model, which of the following is PRIMARILY the cloud customer’s responsibility (not the provider’s)?", options: ["A. Physical security of the data center facility", "B. Maintenance of the underlying physical host hardware", "C. Securing data, identities, and access configurations", "D. Operation of the core network infrastructure"], answer: "C" },
+            { id: "q14", num: 14, text: "The PRIMARY purpose of a SOC 2 report is to:", options: ["A. Report the results of a financial statement audit", "B. Assess a service organization’s controls over security, availability, processing integrity, confidentiality, and privacy", "C. Measure antivirus malware-detection rates", "D. Replace the need for periodic penetration testing"], answer: "B" },
+            { id: "q15", num: 15, text: "DevSecOps is BEST described as:", options: ["A. Outsourcing software development to a third-party vendor", "B. Integrating security practices into DevOps throughout the entire development lifecycle", "C. A category of malicious software targeting developers", "D. Encrypting only the development and test environments"], answer: "B" }
+        ]
+    },
+    {
+        sectionTitle: "DOMAIN 4 · INFORMATION SECURITY INCIDENT MANAGEMENT",
+        sectionWeight: "25% OF EXAM",
+        questions: [
+            { id: "q16", num: 16, text: "The PRIMARY purpose of an incident response plan is to:", options: ["A. Completely eliminate all security incidents from occurring", "B. Provide a structured approach to detect, respond to, and recover from incidents while minimizing impact", "C. Replace antivirus and other preventative controls", "D. Discipline employees who trigger security events"], answer: "B" },
+            { id: "q17", num: 17, text: "In the incident response lifecycle, which phase focuses on analyzing root causes and updating controls to prevent recurrence?", options: ["A. Containment", "B. Lessons learned (post-incident review)", "C. Detection and analysis", "D. Eradication"], answer: "B" },
+            { id: "q18", num: 18, text: "Which is the FIRST and most critical phase of the incident response lifecycle?", options: ["A. Eradication", "B. Recovery", "C. Preparation", "D. Lessons learned"], answer: "C" },
+            { id: "q19", num: 19, text: "When collecting forensic evidence during an incident investigation, which practice is MOST important to preserve its admissibility?", options: ["A. Sharing the evidence openly to speed up the investigation", "B. Maintaining a documented chain of custody", "C. Encrypting and then deleting the original evidence", "D. Editing logs to remove sensitive information"], answer: "B" },
+            { id: "q20", num: 20, text: "What is the key distinction between Disaster Recovery (DR) and Business Continuity (BC)?", options: ["A. They are essentially identical disciplines", "B. DR focuses on the technical restoration of IT systems; BC focuses on keeping the overall business operational during disruption", "C. BC applies only to natural disasters, while DR covers cyber incidents", "D. DR is the sole responsibility of the HR department"], answer: "B" }
         ]
     }
 ];
 
+/* ============================================================================
+   QUIZ RENDERING
+   ============================================================================ */
+function flatQuestions() {
+    const all = [];
+    quizData.forEach((sec, si) => sec.questions.forEach(q => all.push({ ...q, sectionIndex: si, sectionTitle: sec.sectionTitle })));
+    return all;
+}
+
 function renderQuiz() {
     const container = document.getElementById('quiz-container');
-
     quizData.forEach(section => {
         const titleEl = document.createElement('div');
         titleEl.className = 'section-title';
-        titleEl.innerText = section.sectionTitle;
+        titleEl.innerHTML = `<span></span><span class="weight"></span>`;
+        titleEl.firstElementChild.textContent = section.sectionTitle;
+        titleEl.lastElementChild.textContent = section.sectionWeight;
         container.appendChild(titleEl);
 
         section.questions.forEach(q => {
             const card = document.createElement('div');
             card.className = 'question-card';
+            card.id = 'card-' + q.id;
 
             const num = document.createElement('div');
             num.className = 'question-num';
-            num.innerText = `Question ${q.num}`;
+            num.textContent = `Question ${q.num}`;
 
             const text = document.createElement('div');
             text.className = 'question-text';
-            text.innerText = q.text;
+            text.textContent = q.text;
 
             const optsGroup = document.createElement('div');
             optsGroup.className = 'options-group';
@@ -249,53 +417,602 @@ function renderQuiz() {
             q.options.forEach(opt => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
-                
                 const input = document.createElement('input');
                 input.type = 'radio';
-                input.name = q.id; // Uses q.id temporarily for UI grouping
+                input.name = q.id;
                 input.value = opt.charAt(0);
-                input.required = true;
-
+                input.addEventListener('change', () => card.classList.remove('unanswered'));
                 label.appendChild(input);
-                label.appendChild(document.createTextNode(` ${opt}`));
+                label.appendChild(document.createTextNode(' ' + opt));
                 optsGroup.appendChild(label);
             });
 
             card.appendChild(num);
             card.appendChild(text);
             card.appendChild(optsGroup);
-
             container.appendChild(card);
         });
     });
 }
 
-document.getElementById('assessment-form').addEventListener('submit', function(e) {
-    let totalQuestions = 0;
-    let score = 0;
+// ==PDF-ENGINE-START==
+/* ============================================================================
+   SELF-CONTAINED PDF ENGINE (no external libraries; works fully offline)
+   Produces a polished, A4 result report as a Uint8Array.
+   ============================================================================ */
+const PDF_W = 595.28, PDF_H = 841.89; // A4 in points
 
-    quizData.forEach(section => {
-        section.questions.forEach(q => {
-            totalQuestions++;
-            const selected = document.querySelector(`input[name="${q.id}"]:checked`);
-            if (selected && selected.value === q.answer) {
-                score++;
+/* Helvetica character widths (1/1000 em) for WinAnsi codes 32..126 */
+const HELV_WIDTHS = [
+    278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,
+    556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,
+    1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,
+    667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,
+    333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,
+    556,556,333,500,278,556,500,722,500,500,500,334,260,334,584
+];
+
+/* Helvetica-Bold widths (1/1000 em) for WinAnsi codes 32..126 */
+const HELVB_WIDTHS = [
+    278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,
+    556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,
+    975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,
+    667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,
+    333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,
+    611,611,389,556,333,611,556,778,556,556,500,389,280,389,584
+];
+
+const PDF_C = {
+    primary:  [0, 0.294, 0.529],   // #004b87
+    teal:     [0, 0.502, 0.502],   // #008080
+    dark:     [0.173, 0.243, 0.314],// #2c3e50
+    gray:     [0.42, 0.46, 0.50],
+    lightBg:  [0.945, 0.965, 0.975],
+    boxLine:  [0.76, 0.80, 0.84],
+    green:    [0.118, 0.557, 0.243],
+    red:      [0.773, 0.133, 0.122],
+    white:    [1, 1, 1]
+};
+
+function pdfSanitize(s) {
+    return String(s == null ? '' : s)
+        .replace(/[\u2018\u2019\u02BC\u0060]/g, "'")
+        .replace(/[\u201C\u201D]/g, '"')
+        .replace(/\u2013/g, '-').replace(/\u2014/g, '--')
+        .replace(/[\u00B7\u2022]/g, '-')
+        .replace(/\u2026/g, '...')
+        .replace(/[^\x20-\x7E]/g, '');
+}
+function pdfEsc(s) { return s.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function pdfNum(n) { return (Math.round(n * 100) / 100).toString(); }
+
+function pdfTextWidth(str, size, bold) {
+    const T = bold ? HELVB_WIDTHS : HELV_WIDTHS;
+    let w = 0;
+    for (const ch of str) {
+        const c = ch.charCodeAt(0);
+        w += (c >= 32 && c <= 126) ? T[c - 32] : 556;
+    }
+    return w * size / 1000;
+}
+
+function pdfWrap(str, size, maxWidth, bold) {
+    const words = pdfSanitize(str).split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = '';
+    for (const wd of words) {
+        const trial = cur ? cur + ' ' + wd : wd;
+        if (pdfTextWidth(trial, size, bold) <= maxWidth) { cur = trial; }
+        else { if (cur) lines.push(cur); cur = wd; }
+    }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [''];
+}
+
+/* Canvas: collects drawing operators per page with a simple top-down cursor. */
+function PdfDoc() {
+    this.pages = [''];           // current operators buffer per page
+    this.pageIndex = 0;
+}
+PdfDoc.prototype.buf = function () { return this.pages[this.pageIndex]; };
+PdfDoc.prototype.op = function (s) { this.pages[this.pageIndex] += s + '\n'; };
+PdfDoc.prototype.newPageStream = function () { this.pages.push(''); this.pageIndex = this.pages.length - 1; };
+
+PdfDoc.prototype.fillRectTop = function (x, yTop, w, h, rgb) {
+    const y = PDF_H - yTop - h;
+    this.op(`${pdfNum(rgb[0])} ${pdfNum(rgb[1])} ${pdfNum(rgb[2])} rg`);
+    this.op(`${pdfNum(x)} ${pdfNum(y)} ${pdfNum(w)} ${pdfNum(h)} re f`);
+};
+PdfDoc.prototype.strokeRectTop = function (x, yTop, w, h, rgb, lw) {
+    const y = PDF_H - yTop - h;
+    this.op(`${pdfNum(rgb[0])} ${pdfNum(rgb[1])} ${pdfNum(rgb[2])} RG`);
+    this.op(`${pdfNum(lw || 1)} w`);
+    this.op(`${pdfNum(x)} ${pdfNum(y)} ${pdfNum(w)} ${pdfNum(h)} re S`);
+};
+PdfDoc.prototype.hLine = function (x1, x2, yTop, rgb, lw) {
+    const y = PDF_H - yTop;
+    this.op(`${pdfNum(rgb[0])} ${pdfNum(rgb[1])} ${pdfNum(rgb[2])} RG`);
+    this.op(`${pdfNum(lw || 0.7)} w`);
+    this.op(`${pdfNum(x1)} ${pdfNum(y)} m ${pdfNum(x2)} ${pdfNum(y)} l S`);
+};
+PdfDoc.prototype.text = function (x, yTop, str, opt) {
+    opt = opt || {};
+    const size = opt.size || 10;
+    const font = opt.bold ? 'F2' : 'F1';
+    const rgb = opt.color || PDF_C.dark;
+    const s = pdfEsc(pdfSanitize(str));
+    const y = PDF_H - yTop;
+    this.op('BT');
+    this.op(`/${font} ${pdfNum(size)} Tf`);
+    this.op(`${pdfNum(rgb[0])} ${pdfNum(rgb[1])} ${pdfNum(rgb[2])} rg`);
+    this.op(`1 0 0 1 ${pdfNum(x)} ${pdfNum(y)} Tm`);
+    this.op(`(${s}) Tj`);
+    this.op('ET');
+};
+PdfDoc.prototype.textRight = function (xRight, yTop, str, opt) {
+    opt = opt || { size: 10 };
+    const w = pdfTextWidth(pdfSanitize(str), opt.size || 10, opt.bold);
+    this.text(xRight - w, yTop, str, opt);
+};
+PdfDoc.prototype.textCenter = function (xCenter, yTop, str, opt) {
+    opt = opt || { size: 10 };
+    const w = pdfTextWidth(pdfSanitize(str), opt.size || 10, opt.bold);
+    this.text(xCenter - w / 2, yTop, str, opt);
+};
+
+/* ----------------------------------------------------------------------------
+   buildResultPdf(payload) -> Uint8Array
+   payload = {
+     first, last, email, dateStr,
+     total, correctCount, percentage, passed, passMarkText,
+     sections: [ { title, weight, correct, count, items: [
+        { num, text, selectedLetter, selectedText, correctLetter, correctText, isCorrect }
+     ] } ]
+   }
+---------------------------------------------------------------------------- */
+function buildResultPdf(p) {
+    const M = 48;                    // page margin
+    const CW = PDF_W - 2 * M;        // content width
+    const FOOTER_GUARD = 66;         // space reserved above footer
+    const PORTAL_NAME = p.portalName || 'Assessment Portal';
+    const ASSESSMENT_TITLE = p.title || 'Assessment Result';
+
+    const doc = new PdfDoc();
+    let y = 0;
+
+    /* ----- continuation-page header ----- */
+    function drawSlimHeader() {
+        doc.fillRectTop(0, 0, PDF_W, 30, PDF_C.primary);
+        doc.fillRectTop(0, 30, PDF_W, 3, PDF_C.teal);
+        doc.text(M, 19.5, PORTAL_NAME, { size: 9.5, bold: true, color: PDF_C.white });
+        doc.textRight(PDF_W - M, 19.5, ASSESSMENT_TITLE + ' - Official Result', { size: 9, color: PDF_C.white });
+        y = 48;
+    }
+
+    /* ----- first-page header ----- */
+    function drawMainHeader() {
+        doc.fillRectTop(0, 0, PDF_W, 66, PDF_C.primary);
+        doc.fillRectTop(0, 66, PDF_W, 4, PDF_C.teal);
+        doc.text(M, 27, PORTAL_NAME.toUpperCase(), { size: 15.5, bold: true, color: PDF_C.white });
+        doc.text(M, 44, 'Secure - Assess - Certify', { size: 8.5, color: [0.75, 0.85, 0.95] });
+        doc.textRight(PDF_W - M, 27, 'OFFICIAL RESULT', { size: 10.5, bold: true, color: PDF_C.white });
+        doc.textRight(PDF_W - M, 43, p.dateStr, { size: 8.5, color: [0.75, 0.85, 0.95] });
+
+        y = 92;
+        doc.text(M, y, ASSESSMENT_TITLE, { size: 19, bold: true, color: PDF_C.primary }); y += 16;
+        doc.text(M, y, 'Certified Information Security Manager - Result Report', { size: 10.5, color: PDF_C.gray }); y += 18;
+    }
+
+    /* ----- student info box ----- */
+    function drawInfoBox() {
+        const boxH = 58;
+        doc.fillRectTop(M, y, CW, boxH, PDF_C.lightBg);
+        doc.strokeRectTop(M, y, CW, boxH, PDF_C.boxLine, 0.8);
+        doc.fillRectTop(M, y, 4, boxH, PDF_C.teal);
+
+        const colX = [M + 16, M + CW / 2 + 6];
+        const rowY = [y + 21, y + 42];
+        const fields = [
+            ['FIRST NAME', p.first], ['LAST NAME', p.last],
+            ['EMAIL', p.email], ['DATE SUBMITTED', p.dateStr]
+        ];
+        fields.forEach((f, i) => {
+            const fx = colX[i % 2], fy = rowY[Math.floor(i / 2)];
+            doc.text(fx, fy - 1.5, f[0] + ':', { size: 7.5, bold: true, color: PDF_C.gray });
+            const labW = pdfTextWidth(f[0] + ': ', 7.5, true);
+            doc.text(fx + labW, fy, f[1] || '-', { size: 10, bold: true, color: PDF_C.dark });
+        });
+        y += boxH + 14;
+    }
+
+    /* ----- score box ----- */
+    function drawScoreBox() {
+        const boxH = 70;
+        doc.fillRectTop(M, y, CW, boxH, p.passed ? [0.905, 0.957, 0.917] : [0.988, 0.910, 0.902]);
+        doc.strokeRectTop(M, y, CW, boxH, p.passed ? PDF_C.green : PDF_C.red, 1.1);
+
+        doc.text(M + 18, y + 20, 'FINAL SCORE', { size: 8, bold: true, color: PDF_C.gray });
+        doc.text(M + 18, y + 48, `${p.correctCount} / ${p.total}`, { size: 26, bold: true, color: PDF_C.primary });
+        const scW = pdfTextWidth(`${p.correctCount} / ${p.total}`, 26, true);
+        doc.text(M + 18 + scW + 10, y + 48, `(${p.percentage}%)`, { size: 14, bold: true, color: PDF_C.teal });
+
+        // Verdict chip
+        const vText = p.passed ? 'PASS' : 'FAIL';
+        const vCol = p.passed ? PDF_C.green : PDF_C.red;
+        const chipW = 74, chipH = 26, chipX = PDF_W - M - chipW - 16, chipY = y + 14;
+        doc.fillRectTop(chipX, chipY, chipW, chipH, vCol);
+        doc.textCenter(chipX + chipW / 2, chipY + 17.5, vText, { size: 13, bold: true, color: PDF_C.white });
+
+        doc.text(M + 18, y + 63, p.passed
+            ? 'Congratulations - you met the required standard.'
+            : 'Keep practising - review the correct answers below.', { size: 8.5, color: PDF_C.gray });
+        doc.textRight(PDF_W - M - 16, y + 58, 'Pass mark: ' + p.passMarkText + '  ·  Format: Single best answer', { size: 8, color: PDF_C.gray });
+
+        y += boxH + 18;
+        doc.text(M, y, 'RESPONSE BREAKDOWN', { size: 11.5, bold: true, color: PDF_C.primary });
+        y += 7;
+        doc.fillRectTop(M, y, 46, 2.4, PDF_C.teal);
+        y += 12;
+    }
+
+    /* ----- ensure vertical room, else new page ----- */
+    function need(h) { if (y + h > PDF_H - FOOTER_GUARD) { doc.newPageStream(); drawSlimHeader(); } }
+
+    /* ----- one graded question ----- */
+    function drawQuestion(it) {
+        const qSize = 9.5, aSize = 8.5;
+        const qx = M + 26;
+        const qMaxW = CW - 26 - 86;                 // reserve right side for verdict
+        const aMaxW = CW - 26;
+
+        const qLines = pdfWrap(it.text, qSize, qMaxW, true);
+        const yourLines = pdfWrap(`Your answer: ${it.selectedLetter}. ${it.selectedText}`, aSize, aMaxW, false);
+        const keyLines = it.isCorrect ? [] : pdfWrap(`Correct answer: ${it.correctLetter}. ${it.correctText}`, aSize, aMaxW, true);
+
+        const blockH = qLines.length * 11.5 + yourLines.length * 10.5 + keyLines.length * 10.5 + 20;
+        need(blockH);
+
+        // question number + verdict
+        doc.text(M, y + 9.5, 'Q' + it.num + '.', { size: qSize, bold: true, color: PDF_C.primary });
+        doc.textRight(PDF_W - M, y + 9,
+            it.isCorrect ? 'CORRECT' : 'INCORRECT',
+            { size: 8.5, bold: true, color: it.isCorrect ? PDF_C.green : PDF_C.red });
+
+        qLines.forEach((ln, i) => doc.text(qx, y + 9.5 + i * 11.5, ln, { size: qSize, bold: true, color: PDF_C.dark }));
+        let ay = y + 9.5 + qLines.length * 11.5 + 3;
+
+        yourLines.forEach(ln => { doc.text(qx, ay + 8.5, ln, { size: aSize, color: it.isCorrect ? PDF_C.green : PDF_C.red }); ay += 10.5; });
+        keyLines.forEach(ln => { doc.text(qx, ay + 8.5, ln, { size: aSize, bold: true, color: PDF_C.green }); ay += 10.5; });
+
+        y = ay + 8;
+        doc.hLine(M, PDF_W - M, y, [0.87, 0.89, 0.91], 0.6);
+        y += 10;
+    }
+
+    /* ----- section bar ----- */
+    function drawSectionBar(sec) {
+        need(52);
+        doc.fillRectTop(M, y, CW, 19, PDF_C.primary);
+        doc.text(M + 10, y + 13, sec.title, { size: 9, bold: true, color: PDF_C.white });
+        doc.textRight(PDF_W - M - 10, y + 13, sec.correct + ' / ' + sec.count + ' correct', { size: 8.5, bold: true, color: PDF_C.white });
+        y += 25;
+    }
+
+    /* ================= BUILD ================= */
+    drawMainHeader();
+    drawInfoBox();
+    drawScoreBox();
+    p.sections.forEach(sec => {
+        drawSectionBar(sec);
+        sec.items.forEach(drawQuestion);
+        y += 4;
+    });
+
+    /* ----- footers (added after all pages exist) ----- */
+    const totalPages = doc.pages.length;
+    doc.pages.forEach((ops, i) => {
+        doc.pageIndex = i;
+        doc.hLine(M, PDF_W - M, PDF_H - 38, [0.80, 0.83, 0.86], 0.7);
+        doc.text(M, PDF_H - 27, PORTAL_NAME + '  ·  ' + ASSESSMENT_TITLE + ' - Result Report  ·  Generated: ' + p.dateStr, { size: 7.5, color: PDF_C.gray });
+        doc.textRight(PDF_W - M, PDF_H - 27, `Page ${i + 1} of ${totalPages}`, { size: 7.5, color: PDF_C.gray });
+    });
+    doc.pageIndex = doc.pages.length - 1;
+
+    /* ================= ASSEMBLE PDF FILE ================= */
+    const objects = [];
+    const n = doc.pages.length;
+    const fontH = 3, fontHB = 4;
+    let kids = '';
+    for (let i = 0; i < n; i++) kids += `${5 + i * 2} 0 R `;
+
+    objects[1] = `<< /Type /Catalog /Pages 2 0 R >>`;
+    objects[2] = `<< /Type /Pages /Kids [ ${kids}] /Count ${n} >>`;
+    objects[fontH]  = `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>`;
+    objects[fontHB] = `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>`;
+
+    for (let i = 0; i < n; i++) {
+        const pageId = 5 + i * 2, contId = pageId + 1;
+        objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pdfNum(PDF_W)} ${pdfNum(PDF_H)}] /Resources << /Font << /F1 ${fontH} 0 R /F2 ${fontHB} 0 R >> >> /Contents ${contId} 0 R >>`;
+        const stream = doc.pages[i];
+        let byteLen = 0; for (const ch of stream) byteLen += (ch.charCodeAt(0) < 128 ? 1 : 2);
+        objects[contId] = `<< /Length ${byteLen} >>\nstream\n${stream}endstream`;
+    }
+
+    let out = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
+    const offsets = [];
+    for (let i = 1; i < objects.length; i++) {
+        offsets[i] = byteLengthOf(out);
+        out += `${i} 0 obj\n${objects[i]}\nendobj\n`;
+    }
+    const xrefPos = byteLengthOf(out);
+    out += `xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+    for (let i = 1; i < objects.length; i++) out += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+    out += `trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+
+    function byteLengthOf(s) { let l = 0; for (const ch of s) l += (ch.charCodeAt(0) < 128 ? 1 : 2); return l; }
+    const bytes = new Uint8Array(out.length);
+    for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 0xff;
+    return bytes;
+}
+// ==PDF-ENGINE-END==
+
+/* ============================================================================
+   APPLICATION FLOW
+   ============================================================================ */
+let lastPdfBlob = null;
+let lastPdfName = 'CISM-Result.pdf';
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function showFormError(msg) {
+    const el = document.getElementById('form-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+function clearFormError() { document.getElementById('form-error').style.display = 'none'; }
+
+function validateForm(questions) {
+    let firstBad = null;
+    ['student-first', 'student-last', 'student-email'].forEach(id => {
+        const input = document.getElementById(id);
+        const empty = !input.value.trim();
+        input.classList.toggle('input-error', empty);
+        if (empty && !firstBad) firstBad = input;
+    });
+    const emailEl = document.getElementById('student-email');
+    if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+        emailEl.classList.add('input-error');
+        if (!firstBad) firstBad = emailEl;
+    }
+    if (firstBad) {
+        showFormError('Please complete all student information fields (with a valid email address).');
+        firstBad.focus();
+        return false;
+    }
+    const missed = questions.filter(q => !document.querySelector(`input[name="${q.id}"]:checked`));
+    missed.forEach(q => document.getElementById('card-' + q.id).classList.add('unanswered'));
+    if (missed.length) {
+        showFormError(`Please answer all questions before submitting — ${missed.length} unanswered (highlighted in red).`);
+        document.getElementById('card-' + missed[0].id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+    }
+    clearFormError();
+    return true;
+}
+
+function gradeSubmission(questions) {
+    const sections = quizData.map(sec => ({ title: sec.sectionTitle, weight: sec.sectionWeight, correct: 0, count: sec.questions.length, items: [] }));
+    let correctCount = 0;
+    questions.forEach(q => {
+        const chosen = document.querySelector(`input[name="${q.id}"]:checked`).value;
+        const isCorrect = chosen === q.answer;
+        if (isCorrect) { correctCount++; sections[q.sectionIndex].correct++; }
+        const strip = l => (q.options.find(o => o.charAt(0) === l) || l + '.').replace(/^[A-D]\.\s*/, '');
+        sections[q.sectionIndex].items.push({
+            num: q.num, text: q.text,
+            selectedLetter: chosen, selectedText: strip(chosen),
+            correctLetter: q.answer, correctText: strip(q.answer),
+            isCorrect
+        });
+    });
+    const total = questions.length;
+    const percentage = Math.round((correctCount / total) * 100);
+    return { sections, correctCount, total, percentage, passed: (correctCount / total) >= PASS_MARK };
+}
+
+/* Paint correct/incorrect highlights directly onto the submitted form. */
+function paintAnswers(questions) {
+    questions.forEach(q => {
+        document.querySelectorAll(`input[name="${q.id}"]`).forEach(inp => {
+            inp.disabled = true;
+            const label = inp.closest('.option-label');
+            const letter = inp.value;
+            const tag = document.createElement('span');
+            tag.className = 'option-tag';
+            if (letter === q.answer) {
+                label.classList.add('review-correct');
+                tag.classList.add('correct-tag'); tag.textContent = 'CORRECT ANSWER';
+                label.appendChild(tag);
+            } else if (inp.checked) {
+                label.classList.add('review-wrong-choice');
+                tag.classList.add('wrong-tag'); tag.textContent = 'YOUR ANSWER';
+                label.appendChild(tag);
             }
         });
     });
+}
 
-    const percentage = Math.round((score / totalQuestions) * 100);
-    
-    // Map values to hidden inputs so only clean rows show up in the email table
-    document.getElementById('payload-name').value = document.getElementById('student-name').value;
-    document.getElementById('payload-id').value = document.getElementById('student-id').value;
-    document.getElementById('payload-score').value = `${score} / ${totalQuestions} (${percentage}%)`;
-    document.getElementById('payload-date').value = new Date().toLocaleString();
+/* Build the on-page per-question review in the result screen. */
+function renderReview(graded) {
+    const rc = document.getElementById('review-container');
+    rc.innerHTML = '';
+    graded.sections.forEach(sec => {
+        const h = document.createElement('div');
+        h.className = 'review-heading';
+        const t = document.createElement('span'); t.textContent = sec.title;
+        const s = document.createElement('span'); s.className = 'sec-score'; s.textContent = `${sec.correct}/${sec.count} correct`;
+        h.appendChild(t); h.appendChild(s);
+        rc.appendChild(h);
 
-    // Disable raw question inputs right before sending so 'q1', 'q2' aren't sent to email
-    const radioInputs = document.querySelectorAll('input[type="radio"]');
-    radioInputs.forEach(input => input.disabled = true);
+        sec.items.forEach(it => {
+            const div = document.createElement('div');
+            div.className = 'review-item ' + (it.isCorrect ? 'ok' : 'bad');
+            const q = document.createElement('div');
+            q.className = 'r-q';
+            q.textContent = `Q${it.num}. ${it.text}`;
+            const badge = document.createElement('span');
+            badge.className = 'r-badge ' + (it.isCorrect ? 'ok' : 'bad');
+            badge.textContent = it.isCorrect ? 'CORRECT' : 'INCORRECT';
+            q.appendChild(badge);
+            const yours = document.createElement('div');
+            yours.className = 'r-line' + (it.isCorrect ? '' : ' yours-wrong');
+            yours.innerHTML = '<span class="lbl">Your answer:</span> ';
+            yours.appendChild(document.createTextNode(`${it.selectedLetter}. ${it.selectedText}`));
+            div.appendChild(q); div.appendChild(yours);
+            if (!it.isCorrect) {
+                const key = document.createElement('div');
+                key.className = 'r-line key';
+                key.innerHTML = '<span class="lbl">Correct answer:</span> ';
+                key.appendChild(document.createTextNode(`${it.correctLetter}. ${it.correctText}`));
+                div.appendChild(key);
+            }
+            rc.appendChild(div);
+        });
+    });
+}
+
+function triggerDownload() {
+    if (!lastPdfBlob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(lastPdfBlob);
+    a.download = lastPdfName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+}
+
+function setEmailStatus(kind, msg) {
+    const box = document.getElementById('email-status');
+    box.className = 'email-status ' + kind;
+    box.innerHTML = (kind === 'sending' ? '<div class="spinner"></div>' : '') + '<span></span>';
+    box.lastElementChild.textContent = msg;
+}
+
+async function emailResult(payload, pdfFile) {
+    const fd = new FormData();
+    fd.append('_subject', `Official Result: ${PORTAL_NAME} - ${ASSESSMENT_TITLE} - ${payload.first} ${payload.last}`);
+    fd.append('_captcha', 'false');
+    fd.append('_template', 'table');
+    if (CC_EMAIL) fd.append('_cc', CC_EMAIL);
+    fd.append('Student First Name', payload.first);
+    fd.append('Student Last Name', payload.last);
+    fd.append('Student Email', payload.email);
+    fd.append('Assessment Title', ASSESSMENT_TITLE + ' (Certified Information Security Manager)');
+    fd.append('Final Score & Percentage', `${payload.correctCount} / ${payload.total} (${payload.percentage}%)`);
+    fd.append('Result (Pass mark 70%)', payload.passed ? 'PASS' : 'FAIL');
+    fd.append('Submission Date', payload.dateStr);
+    fd.append('Question Responses', payload.responsesCompact);
+    fd.append('See Attachment', 'Full graded result report (PDF) is attached to this email.');
+    fd.append('attachment', pdfFile, pdfFile.name);
+
+    const res = await fetch(`https://formsubmit.co/ajax/${PRIMARY_EMAIL}`, { method: 'POST', body: fd });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || (data.success !== undefined && String(data.success) !== 'true')) {
+        throw new Error(data.message || 'Submission failed with status ' + res.status);
+    }
+}
+
+/* Classic full-page form post (fallback if the AJAX channel is unavailable). */
+function fallbackClassicSubmit(pdfFile) {
+    const form = document.getElementById('assessment-form');
+    try {
+        const dt = new DataTransfer();
+        dt.items.add(pdfFile);
+        document.getElementById('hidden-attachment').files = dt.files;
+    } catch (err) { /* older browsers will simply send without the attachment */ }
+    form.submit();
+}
+
+document.getElementById('assessment-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const questions = flatQuestions();
+    if (!validateForm(questions)) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Grading & preparing your result report…';
+
+    /* ---- grade ---- */
+    const graded = gradeSubmission(questions);
+    const payload = {
+        first: val('student-first'), last: val('student-last'), email: val('student-email'),
+        portalName: PORTAL_NAME, title: ASSESSMENT_TITLE,
+        dateStr: new Date().toLocaleString(),
+        correctCount: graded.correctCount, total: graded.total,
+        percentage: graded.percentage, passed: graded.passed,
+        passMarkText: '70% (14/20)',
+        sections: graded.sections,
+        responsesCompact: graded.sections.flatMap(s => s.items)
+            .map(it => `Q${it.num}: ${it.selectedLetter}${it.isCorrect ? ' (Correct)' : ' (Incorrect - key: ' + it.correctLetter + ')'}`).join('  |  ')
+    };
+
+    /* ---- build the polished PDF ---- */
+    const pdfBytes = buildResultPdf(payload);
+    lastPdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const safeName = (s) => s.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+    lastPdfName = `CISM-PreAssessment-Result-${safeName(payload.first)}-${safeName(payload.last)}-${new Date().toISOString().slice(0, 10)}.pdf`;
+    const pdfFile = new File([lastPdfBlob], lastPdfName, { type: 'application/pdf' });
+
+    /* ---- fill structured hidden fields (used by the classic fallback too) ---- */
+    document.getElementById('payload-first').value = payload.first;
+    document.getElementById('payload-last').value = payload.last;
+    document.getElementById('payload-email').value = payload.email;
+    document.getElementById('payload-score').value = `${payload.correctCount} / ${payload.total} (${payload.percentage}%)`;
+    document.getElementById('payload-result').value = payload.passed ? 'PASS' : 'FAIL';
+    document.getElementById('payload-date').value = payload.dateStr;
+    document.getElementById('payload-responses').value = payload.responsesCompact;
+
+    /* ---- reveal answers ---- */
+    paintAnswers(questions);
+    renderReview(graded);
+
+    const banner = document.getElementById('score-banner');
+    banner.className = 'score-banner ' + (graded.passed ? 'pass' : 'fail');
+    document.getElementById('verdict-text').textContent = graded.passed ? 'PASS — Well done!' : 'FAIL — Keep practising';
+    document.getElementById('score-big').textContent = `${graded.correctCount} / ${graded.total}`;
+    document.getElementById('score-detail').textContent =
+        `${payload.percentage}%  ·  Pass mark: 70% (14/20)  ·  ${payload.first} ${payload.last}  ·  ${payload.dateStr}`;
+
+    /* ---- auto-download the PDF for the student ---- */
+    triggerDownload();
+
+    /* ---- show result screen ---- */
+    btn.textContent = 'Submitted';
+    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('result-screen').scrollIntoView({ behavior: 'smooth' });
+    setEmailStatus('sending', 'Sending your result report (PDF attached) to the assessment team…');
+
+    /* ---- email with the PDF attached ---- */
+    try {
+        await emailResult(payload, pdfFile);
+        setEmailStatus('sent',
+            `Result report sent successfully — the graded PDF was attached and emailed to ${PRIMARY_EMAIL}` +
+            (CC_EMAIL ? ` (copy: ${CC_EMAIL}).` : '.') + ' A copy has also been downloaded to your device.');
+    } catch (err) {
+        setEmailStatus('failed',
+            'Direct sending was blocked (' + err.message + '). Your PDF has been downloaded; attempting the secure fallback submission now…');
+        fallbackClassicSubmit(pdfFile);
+    }
 });
+
+document.getElementById('download-btn').addEventListener('click', triggerDownload);
+
+['student-first', 'student-last', 'student-email'].forEach(id =>
+    document.getElementById(id).addEventListener('input', e => {
+        e.target.classList.remove('input-error');
+        clearFormError();
+    })
+);
 
 renderQuiz();
 </script>
