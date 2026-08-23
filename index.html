@@ -288,6 +288,11 @@
         <button type="submit" class="submit-btn" id="submit-btn">Submit Answers</button>
     </form>
 
+    <!-- Hidden frame that receives the FormSubmit response so the page (and its PDF attachment)
+         can be sent as a classic multipart form post WITHOUT navigating away from this page. -->
+    <iframe name="formsubmit-frame" id="formsubmit-frame" title="submission" tabindex="-1" aria-hidden="true"
+            style="display:none;width:0;height:0;border:0"></iframe>
+
     <!-- ===================== RESULT SCREEN ===================== -->
     <div id="result-screen">
         <div class="score-banner" id="score-banner">
@@ -898,7 +903,42 @@ function setEmailStatus(kind, msg) {
     box.lastElementChild.textContent = msg;
 }
 
-async function emailResult(payload, pdfFile) {
+/* ---------------------------------------------------------------------------
+   PRIMARY SEND — classic multipart form POST (file attachments ONLY work this
+   way with FormSubmit; its AJAX endpoint silently drops files).
+   The response is loaded into a hidden iframe so the page never navigates
+   away; the iframe "load" event tells us the submission was delivered.
+---------------------------------------------------------------------------- */
+let submitWatchdog = null;
+
+function postViaHiddenIframe(pdfFile) {
+    const form = document.getElementById('assessment-form');
+    const frame = document.getElementById('formsubmit-frame');
+    let attachmentStaged = true;
+    try {
+        const dt = new DataTransfer();           // programmatically attach the generated PDF
+        dt.items.add(pdfFile);                    // to the form's (hidden) real file input
+        document.getElementById('hidden-attachment').files = dt.files;
+    } catch (err) {
+        attachmentStaged = false;                 // very old browsers: email goes without file
+        console.warn('Could not stage PDF attachment:', err);
+    }
+    return new Promise((resolve, reject) => {
+        const cleanup = () => {
+            clearTimeout(submitWatchdog);
+            frame.removeEventListener('load', onLoad);
+        };
+        const onLoad = () => { cleanup(); resolve({ attachmentStaged }); };
+        frame.addEventListener('load', onLoad);
+        submitWatchdog = setTimeout(() => { cleanup(); reject(new Error('no confirmation received within 25 seconds')); }, 25000);
+        form.setAttribute('target', 'formsubmit-frame');
+        form.submit();                            // bypasses the submit handler (no loop)
+    });
+}
+
+/* Backup: AJAX notification WITHOUT the file (used only if the primary path
+   cannot be confirmed) so instructors still receive the full graded summary. */
+async function ajaxFallbackNotify(payload) {
     const fd = new FormData();
     fd.append('_subject', `Official Result: ${PORTAL_NAME} - ${ASSESSMENT_TITLE} - ${payload.first} ${payload.last}`);
     fd.append('_captcha', 'false');
@@ -912,25 +952,13 @@ async function emailResult(payload, pdfFile) {
     fd.append('Result (Pass mark 70%)', payload.passed ? 'PASS' : 'FAIL');
     fd.append('Submission Date', payload.dateStr);
     fd.append('Question Responses', payload.responsesCompact);
-    fd.append('See Attachment', 'Full graded result report (PDF) is attached to this email.');
-    fd.append('attachment', pdfFile, pdfFile.name);
+    fd.append('Result PDF', 'Student has the downloaded PDF copy on their device.');
 
     const res = await fetch(`https://formsubmit.co/ajax/${PRIMARY_EMAIL}`, { method: 'POST', body: fd });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || (data.success !== undefined && String(data.success) !== 'true')) {
         throw new Error(data.message || 'Submission failed with status ' + res.status);
     }
-}
-
-/* Classic full-page form post (fallback if the AJAX channel is unavailable). */
-function fallbackClassicSubmit(pdfFile) {
-    const form = document.getElementById('assessment-form');
-    try {
-        const dt = new DataTransfer();
-        dt.items.add(pdfFile);
-        document.getElementById('hidden-attachment').files = dt.files;
-    } catch (err) { /* older browsers will simply send without the attachment */ }
-    form.submit();
 }
 
 document.getElementById('assessment-form').addEventListener('submit', async function (e) {
@@ -990,18 +1018,27 @@ document.getElementById('assessment-form').addEventListener('submit', async func
     btn.textContent = 'Submitted';
     document.getElementById('result-screen').style.display = 'block';
     document.getElementById('result-screen').scrollIntoView({ behavior: 'smooth' });
-    setEmailStatus('sending', 'Sending your result report (PDF attached) to the assessment team…');
+    setEmailStatus('sending', 'Sending your graded result report (PDF attached) to the assessment team\u2026');
 
-    /* ---- email with the PDF attached ---- */
+    /* ---- email with the PDF really attached (classic multipart post) ---- */
     try {
-        await emailResult(payload, pdfFile);
+        const outcome = await postViaHiddenIframe(pdfFile);
         setEmailStatus('sent',
-            `Result report sent successfully — the graded PDF was attached and emailed to ${PRIMARY_EMAIL}` +
-            (CC_EMAIL ? ` (copy: ${CC_EMAIL}).` : '.') + ' A copy has also been downloaded to your device.');
-    } catch (err) {
-        setEmailStatus('failed',
-            'Direct sending was blocked (' + err.message + '). Your PDF has been downloaded; attempting the secure fallback submission now…');
-        fallbackClassicSubmit(pdfFile);
+            `Result report sent \u2014 the graded PDF is attached and on its way to ${PRIMARY_EMAIL}` +
+            (CC_EMAIL ? ` (copy: ${CC_EMAIL}).` : '.') +
+            ' A copy was also downloaded to your device. If it does not arrive within a few minutes, please check the spam/junk folder.' +
+            (outcome.attachmentStaged ? '' : ' Note: this browser could not attach the file automatically \u2014 please email the downloaded PDF to the instructors.'));
+    } catch (primaryErr) {
+        /* Primary path unconfirmed \u2192 still notify instructors (summary only) */
+        try {
+            await ajaxFallbackNotify(payload);
+            setEmailStatus('sent',
+                'Result notification sent to the assessment team (summary). The automatic attachment could not be confirmed \u2014 your full graded PDF was downloaded to this device; please forward it to ' +
+                PRIMARY_EMAIL + ' if it does not arrive attached to their notification.');
+        } catch (backupErr) {
+            setEmailStatus('failed',
+                'Automatic sending could not be confirmed (' + backupErr.message + '). Your graded result PDF has been downloaded \u2014 please email it to ' + PRIMARY_EMAIL + '.');
+        }
     }
 });
 
