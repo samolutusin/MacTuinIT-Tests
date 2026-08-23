@@ -277,7 +277,7 @@
             <ul>
                 <li>Each question has one best answer. Select the single most appropriate option.</li>
                 <li>The test covers all four CISM job-practice domains.</li>
-                <li>Answer all questions before submitting. Your score, the correct answers and a polished, downloadable result report (PDF) will be provided after submission &mdash; and automatically emailed to your instructors.</li>
+                <li>Answer all questions before submitting. Your score and the correct answers will be shown on screen, and your graded result report (PDF) will be emailed automatically to your instructors.</li>
             </ul>
         </div>
 
@@ -304,10 +304,6 @@
         <div class="email-status sending" id="email-status">
             <div class="spinner"></div>
             <span id="email-status-text">Sending your result report to the assessment team&hellip;</span>
-        </div>
-
-        <div class="result-actions">
-            <button type="button" class="action-btn download-btn" id="download-btn">&#11015;&nbsp; Download My Result Report (PDF)</button>
         </div>
 
         <div id="review-container"></div>
@@ -763,9 +759,9 @@ function buildResultPdf(p) {
 
 /* ============================================================================
    APPLICATION FLOW
+   The result PDF is generated in memory and attached to the email ONLY —
+   it is never downloaded to the student's device.
    ============================================================================ */
-let lastPdfBlob = null;
-let lastPdfName = 'CISM-Result.pdf';
 
 function val(id) { return document.getElementById(id).value.trim(); }
 
@@ -884,16 +880,6 @@ function renderReview(graded) {
             rc.appendChild(div);
         });
     });
-}
-
-function triggerDownload() {
-    if (!lastPdfBlob) return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(lastPdfBlob);
-    a.download = lastPdfName;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
 }
 
 function setEmailStatus(kind, msg) {
